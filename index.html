@@ -10,59 +10,44 @@
             <div class="title">Controls</div>
             <div class="container">
                 <div class="input">
-                    <div class="label">Show grid</div>
-                    <input type="checkbox" id="grid-show-grid" checked>
-                </div>
-                <div class="input">
-                    <div class="label">Random color</div>
-                    <input type="checkbox" id="grid-random-fill-color" checked>
+                    <div class="label">Started</div>
+                    <input type="checkbox" id="automata-started">
                 </div>
                 <div class="input">
                     <div class="label">Grid width (cell)</div>
-                    <input type="number" id="grid-width" min="0" value="100">
+                    <input type="number" id="automata-width" min="0">
                 </div>
                 <div class="input">
                     <div class="label">Grid height (cell)</div>
-                    <input type="number" id="grid-height" min="0" value="100">
+                    <input type="number" id="automata-height" min="0">
                 </div>
                 <div class="input">
                     <div class="label">Cell size (px)</div>
-                    <input type="number" id="grid-step" min="0" value="10">
+                    <input type="number" id="automata-step" min="0">
                 </div>
                 <div class="input">
                     <div class="label">Pattern</div>
                     <div>
-                        <button onclick="logPattern()">Log</button>
-                        <button onclick="randomPattern()">Random</button>
-                        <button onclick="savePattern()">Save</button>
+                        <select name="automata-pattern" id="automata-pattern">
+                            <option value="clock">Clock</option>
+                            <option value="galaxy">Galaxy</option>
+                            <option value="spacefiller">Space Filler</option>
+                            <option value="pulsar">Pulsar</option>
+                            <option value="gosperplaneurgun">Gosper Planeur Gun</option>
+                            <option value="random">Random</option>
+                        </select>
                     </div>
                 </div>
                 <div class="input">
-                    <div class="label">Saved patterns</div>
-                    <div id="patterns">
-
-                    </div>
-                </div>
-                <div class="input">
-                    <div class="label">Play</div>
+                    <div class="label">Color</div>
                     <div>
-                        <button id="automata-start">Start</button>
-                        <button id="automata-next">Next</button>
-                    </div>
-                </div>
-                <div class="input">
-                    <div class="label">Move</div>
-                    <div>
-                        <button onclick="moveGridLeft()">Left</button>
-                        <button onclick="moveGridRight()">Right</button>
-                        <button onclick="moveGridUp()">Up</button>
-                        <button onclick="moveGridDown()">Down</button>
-                    </div>
-                </div>
-                <div class="input">
-                    <div class="label">Other</div>
-                    <div>
-                        <button onclick="clearGrid()">Clear</button>
+                        <select name="automata-color" id="automata-color">
+                            <option value="black">Black</option>
+                            <option value="green">Green</option>
+                            <option value="random">Random</option>
+                            <option value="v-gradient">Vertical gradient</option>
+                            <option value="h-gradient">Horizontal gradient</option>
+                        </select>
                     </div>
                 </div>
             </div>
