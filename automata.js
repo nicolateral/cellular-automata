@@ -1,6 +1,32 @@
-class Object {
-
+class MObject {
+   
+    #options = {};
     #events = {};
+    #binds = {};
+
+    constructor(options) {
+        this.setOptions(options);
+    }
+
+    bind(name, config) {
+        var self = this;
+
+        // Create
+        if (!this.#binds[name]) {
+            this.#binds[name] = [];
+        }
+
+        // Register
+        this.#binds[name].push(config);
+        
+        // Listen bind
+        config.scope.addEventListener('change', function() {
+            self.setOption(name, config.get.call(config.scope));
+        });
+        
+        // Set the bind
+        config.set.call(config.scope, this.getOption(name));
+    }
 
     on(name, listener) {
         if (!this.#events[name]) {
@@ -8,40 +34,104 @@ class Object {
         }
         this.#events[name].push(listener);
     }
+
     fireEvent(name, args) {
         if (this.#events[name]) {
             this.#events[name].forEach(function(listener) {
                 listener.fn.apply(listener.scope || this, args);
-            });
+            }, this);
+        }
+    }
+
+    fireBind(name, value) {
+        if (this.#binds[name]) {
+            this.#binds[name].forEach(function(listener) {
+                listener.set.call(listener.scope || this, value);
+            }, this);
+        }
+    }
+
+    getOption(name, solution) {
+        return this.#options[name] || solution;
+    }
+
+    getOptions() {
+        return this.#options;
+    }
+
+    setOption(name, value) {
+        if (this.#options[name] !== value) {
+            this.#options[name] = value;
+            this.fireBind(name, value);
+            this.fireEvent(name + 'change', [value]);
+        }
+    }
+
+    setOptions(options) {
+        var name;
+
+        for (name in options) {
+            this.setOption(name, options[name]);
         }
     }
 }
 
-class Automata extends Object {
+class Automata extends MObject {
 
     #last = null;
     #layers = [];
-    #options = {};
     #element = null;
-    #started = false;
+    #painted = false;
     
     constructor(element, options) {
-        super();
+        
+        // Super
+        super(options);
+
+        // Events
+        this.on('widthchange', {
+            fn: this.updateWidth,
+            scope: this
+        });
+        this.on('heightchange', {
+            fn: this.updateHeight,
+            scope: this
+        });
+        this.on('stepchange', {
+            fn: this.updateStep,
+            scope: this
+        });
+        this.on('startedchange', {
+            fn: this.updateStarted,
+            scope: this
+        });
+
+        // Element
         this.#element = element;
-        this.#options = options;
-        this.#layers.push(new BackgroundLayer('background', this));
-        this.#layers.push(new InfoLayer('info', this));
-        this.#layers[1].getCanvas().style.zIndex = 10;
+
+        // Layers : background
+        this.addLayer(new BackgroundLayer(this, {
+            id: 'background'
+        }));
+
+        // Layers : info
+        this.addLayer(new InfoLayer(this, {
+            id: 'info'
+        })).getCanvas().style.zIndex = 10;
     }
     
     getElement() {
         return this.#element;
     }
 
-    addCellularLayer(id) {
-        var layer = new CellularLayer(id, this);
+    addLayer(layer) {
         this.#layers.push(layer);
+        layer.resize();
         return layer;
+    }
+
+    addCellularLayer(options) {
+        return this.addLayer(new CellularLayer(this, options));
     }
     
     getLayers() {
@@ -49,25 +139,55 @@ class Automata extends Object {
     }
 
     getStep(step) {
-        return this.#options.step;
+        return this.getOption('step');
     }
 
-    getSize(size) {
-        return this.#options.size;
+    getHeight() {
+        return this.getOption('height');
     }
 
-    setStep(step) {
-        this.#options.step = step;
+    getWidth() {
+        return this.getOption('width');
+    }
+
+    getSize() {
+        return {
+            height: this.getHeight(),
+            width: this.getWidth()
+        };
+    }
+
+    updateStep() {
         this.getLayers().forEach(function(layer) {
             layer.resize();
         });
+        if (this.isPainted()) {
+            this.repaint();
+        }
     }
 
-    setSize(size) {
-        this.#options.size = size;
+    updateHeight() {
         this.getLayers().forEach(function(layer) {
             layer.resize();
         });
+        if (this.isPainted()) {
+            this.repaint();
+        }
+    }
+
+    updateWidth() {
+        this.getLayers().forEach(function(layer) {
+            layer.resize();
+        });
+        if (this.isPainted()) {
+            this.repaint();
+        }
+    }
+
+    updateStarted(value) {
+        if (value) {
+            this.start();
+        }
     }
 
     next() {
@@ -77,9 +197,16 @@ class Automata extends Object {
     }
 
     repaint() {
+        
+        // Flag
+        this.#painted = true;
+
+        // Layers
         this.getLayers().forEach(function(layer) {
             layer.repaint();
         });
+
+        // Event
         this.fireEvent('repaint');
     }
 
@@ -95,47 +222,46 @@ class Automata extends Object {
         // Last
         this.#last = now;
 
-        // Start
-        this.#started = true;
-
-        // Next & Repaint
+        // Next
         this.next();
+
+        // Repaint
         this.repaint();
         
         // Request next frame
         requestAnimationFrame(function() {
-            if (self.#started) {
+            if (self.getOption('started')) {
                 self.start();
             }
         });
     }
 
-    pause() {
-        this.#started = false;
-    }
-
-    isStarted() {
-        return this.#started;
+    isPainted() {
+        return this.#painted;
     }
 }
 
-class Layer {
+class Layer extends MObject {
     
-    #id = null;
     #dirty = true;
     #canvas = null;
     #automata = null;
 
-    constructor(id, automata) {
-        this.#id = id;
+    constructor(automata, options) {
+
+        // Super
+        super(options);
+
+        // Automata
         this.#automata = automata;
+
+        // Element
         this.createElement();
-        this.resize();
     }
 
     createElement() {
         this.#canvas = document.createElement('canvas');
-        this.#canvas.id = this.#id;
+        this.#canvas.id = this.getId();
         this.#canvas.style.position = 'absolute';
         this.getAutomata().getElement().appendChild(this.#canvas);
     }
@@ -150,6 +276,10 @@ class Layer {
 
     getContext(type) {
         return this.getCanvas().getContext(type);
+    }
+
+    getId() {
+        return this.getOption('id');
     }
 
     isDirty() {
@@ -167,6 +297,8 @@ class Layer {
         
         this.#canvas.height = size.height * step;
         this.#canvas.width = size.width * step;
+
+        this.setDirty(true);
     }
 
     clear() {
@@ -180,55 +312,24 @@ class Layer {
     }
 
     next() {
+
     }
 
-    // repaint() {
-        
-    //     // Dirty
-    //     if (!this.#dirty) {
-    //         return;
-    //     }
-
-    //     var context = this.getContext('2d');
-        
-    //     // Clear
-    //     this.clear();
-
-    //     // Redraw
-    //     this.redraw(this.getContext('2d'));
-
-    //     // Dirty
-    //     this.#dirty = false;
-    // }
-
     repaint() {
-        
+
         // Dirty
-        if (!this.#dirty) {
+        if (!this.isDirty()) {
             return;
         }
-
-        var canvas = document.createElement('canvas'),
-            context;
-
-        // Size
-        canvas.height = this.#canvas.height,
-        canvas.width = this.#canvas.width
-
-        // Context
-        context = canvas.getContext('2d');
-
+        
         // Clear
         this.clear();
 
         // Redraw
-        this.redraw(context);
-
-        // Buffer
-        this.getContext('2d').drawImage(canvas, 0, 0);
+        this.redraw(this.getContext('2d'));
 
         // Dirty
-        this.#dirty = false;
+        this.setDirty(false);
     }
 
     redraw(context) {
@@ -243,7 +344,6 @@ class BackgroundLayer extends Layer {
             size = automata.getSize(),
             step = automata.getStep(),
             index;
-
 
         // Begin
         context.beginPath();
@@ -272,7 +372,6 @@ class BackgroundLayer extends Layer {
 
 class InfoLayer extends Layer {
     
-    // #dirty = false;
     #fps = 0;
 
     setFPS(fps) {
@@ -295,245 +394,196 @@ class InfoLayer extends Layer {
 
 class CellularLayer extends Layer {
 
-    #index = null;
-    #showOffset = false;
+    #cells = [];
+    #array = [];
 
-    constructor(id, automata) {
-        super(id, automata)
-        this.#index = new Index();
+    #defaultColors = {
+        'black': function() {
+            return '#000000';
+        }
+    };
+
+    constructor(automata, options) {
+
+        // Super
+        super(automata, options);
+
+        // Events
+        this.on('colorchange', {
+            fn: this.updateColor,
+            scope: this
+        });
+        this.on('patternchange', {
+            fn: this.updatePattern,
+            scope: this
+        });
     }
 
-    addCells(cells) {
-        cells.forEach(function(cell) {
-            this.#index.add(new Cell(cell));
+    resize() {
+        super.resize();
+        this.createCells(true);
+    }
+
+    createCells(recover) {
+        var automata = this.getAutomata(),
+            size = automata.getSize(),
+            x, y;
+
+        var cells = [],
+            array = [];
+
+        for (x = 0; x < size.width; x++) {
+            cells[x] = [];
+            for (y = 0; y < size.height; y++) {
+                cells[x][y] = new Cell(this, {
+                    x: x,
+                    y: y
+                });
+                if (recover === true) {
+                    cells[x][y].setAlive(this.isAliveAt(x, y))
+                }
+            }
+        }
+
+        this.#cells = cells;
+        this.#array = array;
+
+        for (x = 0; x < size.width; x++) {
+            for (y = 0; y < size.height; y++) {
+                this.#cells[x][y].addNeighbor(this.getCellAt(x-1, y-1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x, y-1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x+1, y-1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x+1, y));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x+1, y+1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x, y+1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x-1, y+1));
+                this.#cells[x][y].addNeighbor(this.getCellAt(x-1, y));
+                this.#array.push(this.#cells[x][y]);
+            }
+        }
+    }
+
+    isAliveAt(x, y) {
+        var cell = this.getCellAt(x, y);
+        if (cell) {
+            return cell.isAlive();
+        }
+        return false;
+    }
+
+    getCellAt(x, y) {
+        if (!this.#cells[x]) {
+            return;
+        }
+        return this.#cells[x][y];
+    }
+
+    getColorCode(cell) {
+        return this.getOption('colors', this.#defaultColors)[this.getOption('color', 'black')](cell);
+    }
+
+    load(data) {
+        data.forEach(function(value) {
+            this.#cells[value.x][value.y].setAlive(true);
         }, this);
+        this.setDirty(true);
     }
 
     next() {
-        var index = this.#index,
-            offset = this.#index.getOffset();
-        
-        // Dirty
+        this.#array.forEach(function(cell) {
+            cell.next();
+        });
         this.setDirty(true);
-
-        // Indexes
-        this.#index = new Index();
-
-        // Rules
-        offset.getArray().forEach(function(value) {
-            var exist = index.getAt(value.x, value.y);
-            if (!exist) {
-                if (value.neighbors.length === 3) {
-                    this.#index.add(new Cell({
-                        position: value
-                    }));
-                }
-            } else {
-                if (value.neighbors.length === 2 || value.neighbors.length === 3) {
-                    this.#index.add(exist);
-                }
-            }
-        }, this);
     }
 
     redraw(context) {
         var automata = this.getAutomata(),
             step = automata.getStep();
-      
-        // Color
-        context.fillStyle = '#000000';
 
-        // Index
-        this.#index.getArray().forEach(function(cell) {
+        this.#array.forEach(function(cell) {
             cell.redraw(context, step);
         });
+    }
 
-        // ShowOffset
-        if (this.#showOffset) {
-            this.#index.getOffset().getArray().forEach(function(value) {
-                context.fillStyle = '#00FF0022';
-                context.fillRect(value.x * step, value.y * step, step, step);
-            });
-        }
+    updateColor() {
+        this.setDirty(true);
+        this.getAutomata().repaint();
+    }
+
+    updatePattern(name) {
+        var patterns = this.getOption('patterns'),
+            data = patterns[name]();
+
+        // Clear
+        this.createCells();
+
+        // Load
+        this.load(data);
+
+        // Repaint
+        this.getAutomata().repaint();
     }
 }
 
-class Index {
-
-    #offset = null;
-    #limit = null;
-    #array = [];
-    #index = [];
-
-    add(value) {
-        var x = value.x,
-            y = value.y;
-
-        if (!this.#index[x]) {
-            this.#index[x] = [];
-        }
-        if (!this.#index[x][y]) {
-            this.#array.push(value);
-            this.#index[x][y] = value;
-        }
-    }
-    getAt(x, y) {
-        if (!this.#index[x]) {
-            return undefined;
-        }
-        return this.#index[x][y];
-    }
-    getArray() {
-        return this.#array;
-    }
-    getLimit() {
-        if (this.#limit) {
-            return this.#limit;
-        }
-        this.#array.forEach(function(value) {
-            var x = value.x,
-                y = value.y;
-
-            if (!this.#limit) {
-                this.#limit = {
-                    x: [x, x],
-                    y: [y, y]
-                };
-            } else {
-                if (x < this.#limit.x[0]) {
-                    this.#limit.x[0] = x;
-                }
-                if (x > this.#limit.x[1]) {
-                    this.#limit.x[1] = x;
-                }
-                if (y < this.#limit.y[0]) {
-                    this.#limit.y[0] = y;
-                }
-                if (y > this.#limit.y[1]) {
-                    this.#limit.y[1] = y;
-                }
-            }
-        },  this);
-
-        return this.#limit;
-    }
-    clear() {
-        this.#offset = null;
-        this.#limit = null;
-        this.#array = [];
-        this.#index = [];
-    }
-    getNeighbors(x, y) {
-        var neighbors = [],
-            value;
-
-        if (value = this.getAt(x - 1, y - 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x, y - 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x + 1, y - 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x + 1, y)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x + 1, y + 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x, y + 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x - 1, y + 1)) {
-            neighbors.push(value);
-        }
-        if (value = this.getAt(x - 1, y)) {
-            neighbors.push(value);
-        }
-
-        return neighbors;
-    }
-    getOffset() {
-        if (this.#offset) {
-            return this.#offset;
-        }
-
-        this.#offset = new Index();
-
-        this.#array.forEach(function(value) {
-            this.#offset.add({
-                x: value.x,
-                y: value.y,
-                neighbors: this.getNeighbors(value.x, value.y)
-            });
-            this.#offset.add({
-                x: value.x - 1,
-                y: value.y - 1,
-                neighbors: this.getNeighbors(value.x - 1, value.y - 1)
-            });
-            this.#offset.add({
-                x: value.x,
-                y: value.y - 1,
-                neighbors: this.getNeighbors(value.x, value.y - 1)
-            }); 
-            this.#offset.add({
-                x: value.x + 1,
-                y: value.y - 1,
-                neighbors: this.getNeighbors(value.x + 1, value.y - 1)
-            }); 
-            this.#offset.add({
-                x: value.x + 1,
-                y: value.y,
-                neighbors: this.getNeighbors(value.x + 1, value.y)
-            }); 
-            this.#offset.add({
-                x: value.x + 1,
-                y: value.y + 1,
-                neighbors: this.getNeighbors(value.x + 1, value.y + 1)
-            }); 
-            this.#offset.add({
-                x: value.x,
-                y: value.y + 1,
-                neighbors: this.getNeighbors(value.x, value.y + 1)
-            }); 
-            this.#offset.add({
-                x: value.x - 1,
-                y: value.y + 1,
-                neighbors: this.getNeighbors(value.x - 1, value.y + 1)
-            }); 
-            this.#offset.add({
-                x: value.x - 1,
-                y: value.y,
-                neighbors: this.getNeighbors(value.x - 1, value.y)
-            }); 
-        }, this);
-
-        return this.#offset;
-    }
-}
-
-class Cell {
+class Cell extends MObject {
     
-    #options = {};
+    #layer = null;
+    #neighbors = [];
+    #current = false;
+    #next = false;
 
-    constructor(options) {
-        this.#options = options;
+    constructor(layer, options) {
+
+        // Parent
+        super(options);
+
+        // Layer
+        this.#layer = layer;
     }
 
-    get x() {
-        return this.#options.position.x;
+    addNeighbor(neighbor) {
+        if (neighbor) {
+            this.#neighbors.push(neighbor);
+        }
     }
 
-    get y() {
-        return this.#options.position.y;
+    getLayer() {
+        return this.#layer;
     }
 
-    clear(context, step) {
-        context.clearRect(this.x * step, this.y * step, step, step);
+    setAlive(alive) {
+        this.#next = alive;
+    }
+
+    isAlive() {
+        return this.#current;
+    }
+
+    next() {
+        var count = 0;
+
+        this.#neighbors.forEach(function(neighbor) {
+            if (neighbor.isAlive()) {
+                count += 1;
+            }
+        });
+
+        if (!this.isAlive()) {
+            if (count === 3) {
+                this.#next = true;
+            }
+        } else {
+            if (!(count === 2 || count === 3)) {
+                this.#next = false;
+            }
+        }
     }
 
     redraw(context, step) {
-        context.fillRect(this.x * step, this.y * step, step, step);
+        this.#current = this.#next;
+        if (this.#current) {
+            context.fillStyle = this.#layer.getColorCode(this);
+            context.fillRect(this.getOption('x') * step, this.getOption('y') * step, step, step);
+        }
     }
 }
