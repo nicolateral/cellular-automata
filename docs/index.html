@@ -16,6 +16,9 @@
                     <a onclick="playResume(this)">Play</a>
                     <a onclick="slowerFaster(this)">Faster</a>
                     <a onclick="randomize()">Randomize</a>
+                    <a onclick="clearLayer()">Clear</a>
+                    <a onclick="colorAB(this)">Color B</a>
+                    <a onclick="ruleAB(this)">Rule B</a>
                 </div>
                 <div>
                     <a href="jsdoc/index.html" target="_blank">Docs</a>
@@ -46,11 +49,17 @@
         automata.addCellularLayer({
             id: 'layer-0',
             colors: {
-                'random': function() {
-                    return 'rgb(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ')';
+                'a': function() {
+                    return 'rgba(0, 0, 0, 0.7)';
+                },
+                'b': function() {
+                    return 'rgba(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', 0.7)';
                 }
             },
             patterns: {
+                'empty': function() {
+                    return [];
+                },
                 'random': function() {
                     var random = [],
                         i, j;
@@ -70,12 +79,48 @@
                     return random;
                 }
             },
-            color: 'random',
+            rules: {
+                'a': function(cell) {
+                    var count = 0;
+
+                    cell.getNeighbors().forEach(function(neighbor) {
+                        if (neighbor.isAlive()) {
+                            count += 1;
+                        }
+                    });
+
+                    if (!cell.isAlive()) {
+                        if (count === 3) {
+                            return true;
+                        }
+                    } else {
+                        if (!(count === 2 || count === 3)) {
+                            return false;
+                        }
+                    }
+
+                    return cell.isAlive();
+                },
+                'b': function(cell) {
+                    var count = 0;
+                    
+                    cell.getNeighbors().forEach(function(neighbor) {
+                        if (neighbor.isAlive()) {
+                            count += 1;
+                        }
+                    });
+
+                    if (cell.isAlive()) {
+                        return false;
+                    }
+
+                    return count === 1;
+                }
+            },
+            rule: 'a',
+            color: 'a',
             pattern: 'random'
         });
-
-        // Repaint
-        automata.repaint();
 
         // PlayResume
         const playResume = function(element) {
@@ -102,5 +147,38 @@
         const randomize = function() {
             automata.getLayer('layer-0').setOption('pattern', 'random', true);
         };
+
+        // Clear
+        const clearLayer = function() {
+            if (automata.getOption('started')) {
+                automata.setOption('started', false);
+            }
+            automata.getLayer('layer-0').setOption('pattern', 'empty', true);
+        };
+        
+        // Const
+        const colorAB = function(element) {
+            if (automata.getLayer('layer-0').getOption('color') === 'a') {
+                element.innerHTML = 'Color A';
+                automata.getLayer('layer-0').setOption('color', 'b');
+            } else {
+                element.innerHTML = 'Color B';
+                automata.getLayer('layer-0').setOption('color', 'a');
+            }
+        }
+
+        // Const
+        const ruleAB = function(element) {
+            if (automata.getLayer('layer-0').getOption('rule') === 'a') {
+                element.innerHTML = 'Rule A';
+                automata.getLayer('layer-0').setOption('rule', 'b');
+            } else {
+                element.innerHTML = 'Rule B';
+                automata.getLayer('layer-0').setOption('rule', 'a');
+            }
+        }
+
+        // Repaint
+        automata.repaint();
     </script>
 </html>

@@ -788,51 +788,61 @@ Automata.InfoLayer = class extends Automata.Layer {
  * Automata.CellularLayer is a subclass of Automata.Layer.<br>
  * Developper should instanciate this class to draw an automata.
  * @example
- * const myAutomata = new Automata.Automata(document.getElementById('automata'), {
- *      started: false,
- *      delay: 100,
- *      height: 100,
- *      width: 100,
- *      step: 10
+ * const automata = new Automata.Automata(document.getElementById('automata'), {
+ *     started: false,
+ *     delay: 100,
+ *     height: 10,
+ *     width: 10,
+ *     step: 10
  * });
  * 
  * // Add a layer
  * automata.addLayer(new Automata.CellularLayer(automata, {
- *      id: 'layer-0',
- *      patterns: {
- *          'france-flag': function() {
- *              returns [{
- *                  x: 1, 
- *                  y: 1
- *              }, {
- *                  x: 2, 
- *                  y: 1
- *              }, {
- *                  x: 3, 
- *                  y: 3
- *              }];
- *          }
- *      },
- *      pattern: 'france-flag',
- *      colors: {
- *          'france-flag': function(cell) {
- *              if (cell.getX() === 1) {
- *                  return 'blue';
- *              }
- *              if (cell.getX() === 2) {
- *                  return 'white';
- *              }
- *              if (cell.getX() === 3) {
- *                  return 'red';
- *              }
- *              return 'transparent';
- *          }
- *      },
- *      color: 'france-flag';
+ *     id: 'layer-0',
+ *     patterns: {
+ *         'france-flag': function() {
+ *             return [{
+ *                 x: 4, 
+ *                 y: 5
+ *             }, {
+ *                 x: 5, 
+ *                 y: 5
+ *             }, {
+ *                 x: 6, 
+ *                 y: 5
+ *             }];
+ *         }
+ *     },
+ *     pattern: 'france-flag',
+ *     colors: {
+ *         'france-flag': function(cell) {
+ *             if (cell.getX() === 4) {
+ *                 return 'blue';
+ *             }
+ *             if (cell.getX() === 5) {
+ *                 return 'white';
+ *             }
+ *             if (cell.getX() === 6) {
+ *                 return 'red';
+ *             }
+ *             return 'transparent';
+ *         }
+ *     },
+ *     color: 'france-flag',
+ *     rules: {
+ *         'static': function(cell) {
+ *             return cell.isAlive();
+ *         },
+ *         'invert': function(cell) {
+ *             return !cell.isAlive();
+ *         }
+ *     },
+ *     rule: 'invert'
  * }));
  * 
- * // Ask the automata to repaint
- * myAutomata.repaint();
+ * automata.getLayer('layer-0').setOption('pattern', 'france-flag');
+ * 
+ * automata.setOption('started', true);
  */
 Automata.CellularLayer = class extends Automata.Layer {
 
@@ -847,6 +857,8 @@ Automata.CellularLayer = class extends Automata.Layer {
      * @param {String} options.pattern The default pattern
      * @param {Object} options.colors A map of String<Function> that the layer will use as a color catalog.
      * @param {String} options.color The default color
+     * @param {Object} options.rules A map of String<Function> that the layer will use as a rule catalog.
+     * @param {String} options.rules The default rule
      */
     constructor(automata, options) {
 
@@ -947,6 +959,26 @@ Automata.CellularLayer = class extends Automata.Layer {
     }
 
     /**
+     * Returns the next alive state of a cell
+     * @param {Automata.Cell} cell The cell
+     * @returns {Boolean} the next alive state
+     * @private
+     */
+     getNextAlive(cell) {
+        return this.getOption('rules')[this.getOption('rule')](cell);
+    }
+    
+    /**
+     * Returns the color code of the cell
+     * @param {Automata.Cell} cell The cell
+     * @returns {String} The color code of the cell
+     * @private
+     */
+    getColorCode(cell) {
+        return this.getOption('colors')[this.getOption('color')](cell);
+    }
+
+    /**
      * Resize the layer. It recreates the cells.
      * @private
      */
@@ -1017,14 +1049,6 @@ Automata.CellularLayer = class extends Automata.Layer {
         return this.#cells[x][y];
     }
 
-    /**
-     * Returns the color code of the cell
-     * @param {Automata.Cell} cell The ceell
-     * @returns {String} The color code of the cell
-     */
-    getColorCode(cell) {
-        return this.getOption('colors')[this.getOption('color')](cell);
-    }
 
     /**
      * Load coordininates and set the cell as alive. The layer is marked 
@@ -1108,23 +1132,7 @@ Automata.Cell = class extends Automata.Object {
      * @private
      */
     next() {
-        var count = 0;
-
-        this.#neighbors.forEach(function(neighbor) {
-            if (neighbor.isAlive()) {
-                count += 1;
-            }
-        });
-
-        if (!this.isAlive()) {
-            if (count === 3) {
-                this.#next = true;
-            }
-        } else {
-            if (!(count === 2 || count === 3)) {
-                this.#next = false;
-            }
-        }
+        this.#next = this.getLayer().getNextAlive(this);
     }
 
     /**
@@ -1173,6 +1181,14 @@ Automata.Cell = class extends Automata.Object {
      */
     getY() {
         return this.getOption('y');
+    }
+
+    /**
+     * Return the neighbors
+     * @returns {Array.<Automata.Cell>} The neighbors
+     */
+    getNeighbors() {
+        return this.#neighbors;
     }
 
     /**
