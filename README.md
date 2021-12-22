@@ -59,7 +59,7 @@ Create simple or complexe interactive cellular automata in a webpage.
 </html>
 ```
 ## Example
-See expample [here](https://nicolateral.github.io/cellular-automata/docs/index.html)
+See expample [here](https://nicolateral.github.io/cellular-automata/index.html)
 
 ## Documentation
-See full documentation [here](https://nicolateral.github.io/cellular-automata/docs/jsdoc/index.html)
+See full documentation [here](https://nicolateral.github.io/cellular-automata/jsdoc/index.html)

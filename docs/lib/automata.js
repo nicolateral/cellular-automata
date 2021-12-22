@@ -1,4 +1,6 @@
-// Namespace 
+/**
+ *  Namespace 
+ */
 var Automata = {};
 
 /**
@@ -149,9 +151,10 @@ Automata.Object = class {
      * Set an option. If the option has changed, it fire the associated binds and an event named event + 'change' (ex: widthchange)
      * @param {String} name The option name
      * @param {*} value The value
+     * @param {Boolean} reset True to reset the value and fire events even if the value was not changed
      */
-    setOption(name, value) {
-        if (this.#options[name] !== value) {
+    setOption(name, value, reset) {
+        if (this.#options[name] !== value || reset === true) {
             this.#options[name] = value;
             this.fireBind(name, value);
             this.fireEvent(name + 'change', [value]);
@@ -594,12 +597,12 @@ Automata.Layer = class extends Automata.Object {
         this.#canvas.width = width;
 
         if (width < automata.getElement().offsetWidth) {
-            this.#canvas.style.left = Math.round((automata.getElement().offsetWidth - width) / 2);
+            this.#canvas.style.left = Math.round((automata.getElement().offsetWidth - width) / 2) + automata.getElement().offsetLeft;
         } else {
             this.#canvas.style.left = 0;
         }
         if (height < automata.getElement().offsetHeight) {
-            this.#canvas.style.top = Math.round((automata.getElement().offsetHeight - height) / 2);
+            this.#canvas.style.top = Math.round((automata.getElement().offsetHeight - height) / 2) + automata.getElement().offsetTop;
         } else {
             this.#canvas.style.top = 0;
         }
