@@ -19,41 +19,60 @@ Create simple or complexe interactive cellular automata in a webpage.
         </div>
     </body>
     <script>
-
-        // Creates the automata
         const automata = new Automata.Automata(document.getElementById('automata'), {
             started: false,
             delay: 100,
-            height: 5,
-            width: 5,
+            height: 10,
+            width: 10,
             step: 10
         });
-
         
-        // Add a cellular layer
-        automata.addCellularLayer({
+        // Add a layer
+        automata.addLayer(new Automata.CellularLayer(automata, {
             id: 'layer-0',
-            color: 'red',
-            colors: {
-                'red': function() {
-                    return '#FF0000';
+            patterns: {
+                'france-flag': function() {
+                    return [{
+                        x: 4, 
+                        y: 5
+                    }, {
+                        x: 5, 
+                        y: 5
+                    }, {
+                        x: 6, 
+                        y: 5
+                    }];
                 }
-            }
-        });
-
-        // Draw 
-        automata.getLayer('layer-0').load([{
-            x: 1,
-            y: 3
-        }, {
-            x: 2,
-            y: 3
-        }, {
-            x: 3,
-            y: 3
-        }]);
-
-        // Start
+            },
+            pattern: 'france-flag',
+            colors: {
+                'france-flag': function(cell) {
+                    if (cell.getX() === 4) {
+                        return 'blue';
+                    }
+                    if (cell.getX() === 5) {
+                        return 'white';
+                    }
+                    if (cell.getX() === 6) {
+                        return 'red';
+                    }
+                    return 'transparent';
+                }
+            },
+            color: 'france-flag',
+            rules: {
+                'static': function(cell) {
+                    return cell.isAlive();
+                },
+                'invert': function(cell) {
+                    return !cell.isAlive();
+                }
+            },
+            rule: 'invert'
+        }));
+        
+        automata.getLayer('layer-0').setOption('pattern', 'france-flag');
+        
         automata.setOption('started', true);
     </script>
 </html>
