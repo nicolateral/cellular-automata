@@ -71,8 +71,6 @@ Create simple or complexe interactive cellular automata in a webpage.
             rule: 'invert'
         }));
         
-        automata.getLayer('layer-0').setOption('pattern', 'france-flag');
-        
         automata.setOption('started', true);
     </script>
 </html>

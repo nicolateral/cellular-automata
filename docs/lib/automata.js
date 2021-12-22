@@ -840,8 +840,6 @@ Automata.InfoLayer = class extends Automata.Layer {
  *     rule: 'invert'
  * }));
  * 
- * automata.getLayer('layer-0').setOption('pattern', 'france-flag');
- * 
  * automata.setOption('started', true);
  */
 Automata.CellularLayer = class extends Automata.Layer {
