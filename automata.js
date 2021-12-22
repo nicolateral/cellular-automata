@@ -1,4 +1,6 @@
-// Namespace 
+/**
+ *  Namespace 
+ */
 var Automata = {};
 
 /**
