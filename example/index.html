@@ -1,17 +1,25 @@
 <html>
     <head>
-        <link href="style.css" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="automata.js"></script>
-        <script type="text/javascript" src="patterns.js"></script>
-        <script type="text/javascript" src="init.js"></script>
+        <link href="style/style.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="lib/automata.js"></script>
+        <script type="text/javascript" src="src/patterns.js"></script>
+        <script type="text/javascript" src="src/control.js"></script>
     </head>
     <body>
         <div class="panel control">
-            <div class="title">Controls</div>
+            <div class="title">Configuration</div>
             <div class="container">
                 <div class="input">
-                    <div class="label">Started</div>
-                    <input type="checkbox" id="automata-started">
+                    <div class="label">Controls</div>
+                    <div style="display: flex;">
+                        <button id="automata-play">Play</button>
+                        <button id="automata-next">Next</button>
+                        <button id="automata-clear">Clear</button>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="label">Delay (ms)</div>
+                    <input type="number" id="automata-delay" min="0">
                 </div>
                 <div class="input">
                     <div class="label">Grid width (cell)</div>
@@ -55,12 +63,6 @@
         <div class="panel automata">
             <div class="title">Canvas</div>
             <div id="automata">
-            </div>
-        </div>
-        <div class="panel log">
-            <div class="title">Log</div>
-            <div id="log" class="container">
-
             </div>
         </div>
         <script type="text/javascript">

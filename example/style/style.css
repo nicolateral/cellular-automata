@@ -11,6 +11,14 @@ body {
 
 .automata {
     flex: 1;
+    flex-direction: column;
+    display: flex;
+}
+
+#automata {
+    flex: 1;
+    position: relative;
+    overflow: auto;
 }
 
 .log {
