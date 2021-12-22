@@ -7,7 +7,7 @@ Create simple or complexe interactive cellular automata in a webpage.
 ### Simple automata
 ![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true)
 
-### Complexe automata
+### Complex automata
 ![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true)
 
 ## Usage
