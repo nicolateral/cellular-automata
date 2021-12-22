@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <link href="style/style.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="lib/automata.js"></script>
+        <script type="text/javascript" src="src/patterns.js"></script>
+        <script type="text/javascript" src="src/control.js"></script>
+    </head>
+    <body>
+        <div class="panel control">
+            <div class="title">Configuration</div>
+            <div class="container">
+                <div class="input">
+                    <div class="label">Controls</div>
+                    <div style="display: flex;">
+                        <button id="automata-play">Play</button>
+                        <button id="automata-next">Next</button>
+                        <button id="automata-clear">Clear</button>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="label">Delay (ms)</div>
+                    <input type="number" id="automata-delay" min="0">
+                </div>
+                <div class="input">
+                    <div class="label">Grid width (cell)</div>
+                    <input type="number" id="automata-width" min="0">
+                </div>
+                <div class="input">
+                    <div class="label">Grid height (cell)</div>
+                    <input type="number" id="automata-height" min="0">
+                </div>
+                <div class="input">
+                    <div class="label">Cell size (px)</div>
+                    <input type="number" id="automata-step" min="0">
+                </div>
+                <div class="input">
+                    <div class="label">Pattern</div>
+                    <div>
+                        <select name="automata-pattern" id="automata-pattern">
+                            <option value="clock">Clock</option>
+                            <option value="galaxy">Galaxy</option>
+                            <option value="spacefiller">Space Filler</option>
+                            <option value="pulsar">Pulsar</option>
+                            <option value="gosperplaneurgun">Gosper Planeur Gun</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input">
+                    <div class="label">Color</div>
+                    <div>
+                        <select name="automata-color" id="automata-color">
+                            <option value="black">Black</option>
+                            <option value="green">Green</option>
+                            <option value="random">Random</option>
+                            <option value="v-gradient">Vertical gradient</option>
+                            <option value="h-gradient">Horizontal gradient</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel automata">
+            <div class="title">Canvas</div>
+            <div id="automata">
+            </div>
+        </div>
+        <script type="text/javascript">
+            init();
+        </script>
+    </body>
+</html>

@@ -1,60 +1,76 @@
 body {
-    display: flex;
     color: #3d3d3d;
     font-size: 13px;
     font-family: sans-serif;
+    margin: 0px;
+    padding: 0px;
 }
-
-.control {
-    width: 200px;
-}
-
-.automata {
-    flex: 1;
-    flex-direction: column;
+.flex-box {
     display: flex;
 }
 
-#automata {
-    flex: 1;
-    position: relative;
-    overflow: auto;
+.flex-v {
+    flex-direction: column;
 }
 
-.log {
-    width: 400px;
+.flex-h {
+    flex-direction: row;
 }
 
-.log .container {
-    font-family: monospace;
-    font-size: 11px;
+#app {
+    min-height:100vh;
 }
 
-.panel {
-    margin: 5px;
-}
-
-.panel .title {
-    background-color: #438ca6;
+#header {
+    background-color: #6e7794;
     color: white;
+    font-size: 18px;
     font-weight: 600;
-    padding: 10px;
+    line-height: 48px;
+    padding: 0px 10px;
 }
 
-.panel .container {
-    padding: 10px;
+#header a, #footer a {
+    color: white;
+    text-decoration: none;
 }
 
-.panel .container .input {
-    margin-bottom: 10px;
+#header a:hover, #footer a:hover {
+    text-decoration: underline;
 }
 
-.panel .container .label {
-    font-weight: 600;
-    margin-bottom: 3px;
+#title {
+    margin-right: 50px;
 }
 
-button {
-    margin-bottom: 3px;
-    margin-right: 3px;
+#page {
+    display: block;
+    flex: 1;
+    flex-grow: 1;
+}
+
+#footer {
+    background-color: #3d3d3d;
+    color: white;
+    padding: 10px 10px;
+    line-height: 32px;
+}
+
+#controls {
+    flex: 1;
+}
+
+#controls a {
+    display: block;
+    border-radius: 5px;
+    line-height: 34px;
+    padding: 0 10px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+#controls a:hover {
+    background-color: #30323a;
+    text-decoration: none;
+    cursor: pointer;
 }

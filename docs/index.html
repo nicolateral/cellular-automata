@@ -4,69 +4,103 @@
         <script type="text/javascript" src="lib/automata.js"></script>
         <script type="text/javascript" src="src/patterns.js"></script>
         <script type="text/javascript" src="src/control.js"></script>
+        <title>Cellular Automata JS Library</title>
     </head>
     <body>
-        <div class="panel control">
-            <div class="title">Configuration</div>
-            <div class="container">
-                <div class="input">
-                    <div class="label">Controls</div>
-                    <div style="display: flex;">
-                        <button id="automata-play">Play</button>
-                        <button id="automata-next">Next</button>
-                        <button id="automata-clear">Clear</button>
-                    </div>
+        <div id="app" class="flex-box flex-v">
+            <div id="header" class="flex-box flex-h">
+                <div id="title">
+                    Cellular Automata JS Library
                 </div>
-                <div class="input">
-                    <div class="label">Delay (ms)</div>
-                    <input type="number" id="automata-delay" min="0">
+                <div id="controls" class="flex-box flex-h">
+                    <a onclick="playResume(this)">Play</a>
+                    <a onclick="slowerFaster(this)">Faster</a>
+                    <a onclick="randomize()">Randomize</a>
                 </div>
-                <div class="input">
-                    <div class="label">Grid width (cell)</div>
-                    <input type="number" id="automata-width" min="0">
-                </div>
-                <div class="input">
-                    <div class="label">Grid height (cell)</div>
-                    <input type="number" id="automata-height" min="0">
-                </div>
-                <div class="input">
-                    <div class="label">Cell size (px)</div>
-                    <input type="number" id="automata-step" min="0">
-                </div>
-                <div class="input">
-                    <div class="label">Pattern</div>
-                    <div>
-                        <select name="automata-pattern" id="automata-pattern">
-                            <option value="clock">Clock</option>
-                            <option value="galaxy">Galaxy</option>
-                            <option value="spacefiller">Space Filler</option>
-                            <option value="pulsar">Pulsar</option>
-                            <option value="gosperplaneurgun">Gosper Planeur Gun</option>
-                            <option value="random">Random</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input">
-                    <div class="label">Color</div>
-                    <div>
-                        <select name="automata-color" id="automata-color">
-                            <option value="black">Black</option>
-                            <option value="green">Green</option>
-                            <option value="random">Random</option>
-                            <option value="v-gradient">Vertical gradient</option>
-                            <option value="h-gradient">Horizontal gradient</option>
-                        </select>
-                    </div>
+                <div>
+                    <a href="jsdoc/index.html" target="_blank">Docs</a>
                 </div>
             </div>
-        </div>
-        <div class="panel automata">
-            <div class="title">Canvas</div>
-            <div id="automata">
+            <div id="page" class="flex-box flex-h">
+                
             </div>
+            <div id="footer">Cellular Automata JS Library is open source, see <a href="https://github.com/nicolateral/cellular-automata">Github Repository</a></div>
         </div>
-        <script type="text/javascript">
-            init();
-        </script>
     </body>
+    <script type="text/javascript">
+
+        var page = document.getElementById('page'),
+            height = page.offsetHeight,
+            width = page.offsetWidth; 
+
+
+        // Automata
+        const automata = new Automata.Automata(document.getElementById('page'), {
+            delay: 200,
+            step: 10,
+            height: Math.floor(height / 10) - 1,
+            width: Math.floor(width / 10) - 1
+        });
+
+        // Layer
+        automata.addCellularLayer({
+            id: 'layer-0',
+            colors: {
+                'random': function() {
+                    return 'rgb(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ')';
+                }
+            },
+            patterns: {
+                'random': function() {
+                    var random = [],
+                        i, j;
+
+                    for (i = 0; i < automata.getSize().width; i++) {
+                        for (j = 0; j < automata.getSize().height; j++) {
+                            if (Math.round(Math.random())) {
+                                random.push({
+                                    x: i,
+                                    y: j
+                                });
+                            }
+                        }
+                    }
+
+                    // Load
+                    return random;
+                }
+            },
+            color: 'random',
+            pattern: 'random'
+        });
+
+        // Repaint
+        automata.repaint();
+
+        // PlayResume
+        const playResume = function(element) {
+            if (automata.getOption('started')) {
+                element.innerHTML = 'Resume';
+            } else {
+                element.innerHTML = 'Pause';
+            }
+            automata.setOption('started', !automata.getOption('started'));
+        };
+
+        // SlowerFaster
+        const slowerFaster = function(element) {
+            if (automata.getOption('delay') === 0) {
+                element.innerHTML = 'Faster';
+                automata.setOption('delay', 200);
+            } else {
+                element.innerHTML = 'Slower';
+                automata.setOption('delay', 0);
+            }
+        };
+
+        // Randomize
+        const randomize = function() {
+            automata.getLayer('layer-0').setOption('pattern', 'random', true);
+        };
+    </script>
 </html>
