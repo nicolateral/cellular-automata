@@ -5,10 +5,10 @@ A javascript library for create cellular automata.
 Create simple or complexe interactive cellular automata in a webpage.
 
 ### Simple automata
-![alt text](https://github.com/nicolateral/cellular-automata/blob/develop/doc/resource/simple_automata.png?raw=true)
+![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true)
 
 ### Complexe automata
-![alt text](https://github.com/nicolateral/cellular-automata/blob/develop/doc/resource/complex_automata.png?raw=true)
+![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true)
 
 ## Usage
 ```html
@@ -59,7 +59,7 @@ Create simple or complexe interactive cellular automata in a webpage.
 </html>
 ```
 ## Example
-See expample [here](https://nicolateral.github.io/cellular-automata-doc/index.html)
+See expample [here](https://nicolateral.github.io/cellular-automata/docs/index.html)
 
 ## Documentation
-See full documentation [here](https://nicolateral.github.io/cellular-automata-doc/jsdoc/index.html)
+See full documentation [here](https://nicolateral.github.io/cellular-automata/docs/jsdoc/index.html)
