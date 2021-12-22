@@ -594,9 +594,13 @@ Automata.Layer = class extends Automata.Object {
 
         if (width < automata.getElement().offsetWidth) {
             this.#canvas.style.left = Math.round((automata.getElement().offsetWidth - width) / 2);
+        } else {
+            this.#canvas.style.left = 0;
         }
         if (height < automata.getElement().offsetHeight) {
             this.#canvas.style.top = Math.round((automata.getElement().offsetHeight - height) / 2);
+        } else {
+            this.#canvas.style.top = 0;
         }
 
         this.setDirty(true);
