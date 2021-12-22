@@ -1,17 +1,17 @@
 function init() {
 
     // Automata
-    var automata = new Automata(document.getElementById('automata'), {
+    var automata = new Automata.Automata(document.getElementById('automata'), {
         started: false,
+        delay: 100,
         height: 100,
         width: 100,
         step: 10
     });
 
     // Layer
-    var layer = automata.addCellularLayer({
+    automata.addCellularLayer({
         id: 'layer-0',
-        color: 'black',
         patterns: {
             'clock': function() {
                 return clockPattern;
@@ -47,6 +47,7 @@ function init() {
                 return random;
             }
         },
+        pattern: 'random',
         colors: {
             'black': function() {
                 return '#00000099';
@@ -69,14 +70,25 @@ function init() {
 
                 return 'rgba(0, 0, 0, ' + gradient + ')';
             }
+        },
+        color: 'random'
+    });
+
+    // Width
+    automata.bind('delay', {
+        element: document.getElementById('automata-delay'),
+        set: function(delay) {
+            this.value = delay;
+        },
+        get: function() {
+            return this.value;
         }
     });
 
     // Width
     automata.bind('width', {
-        scope: document.getElementById('automata-width'),
+        element: document.getElementById('automata-width'),
         set: function(width) {
-            log('change width to ' + width);
             this.value = width;
         },
         get: function() {
@@ -86,9 +98,8 @@ function init() {
 
     // Height
     automata.bind('height', {
-        scope: document.getElementById('automata-height'),
+        element: document.getElementById('automata-height'),
         set: function(height) {
-            log('change height to ' + height);
             this.value = height;
         },
         get: function() {
@@ -98,9 +109,8 @@ function init() {
 
     // Step
     automata.bind('step', {
-        scope: document.getElementById('automata-step'),
+        element: document.getElementById('automata-step'),
         set: function(step) {
-            log('change step to ' + step);
             this.value = step;
         },
         get: function() {
@@ -108,24 +118,10 @@ function init() {
         }
     });
 
-    // Started
-    automata.bind('started', {
-        scope: document.getElementById('automata-started'),
-        set: function(checked) {
-            this.checked = checked;
-        },
-        get: function() {
-            return this.checked;
-        }
-    });
-
     // Layer
-    layer.bind('pattern', {
-        scope: document.getElementById('automata-pattern'),
+    automata.getLayer('layer-0').bind('pattern', {
+        element: document.getElementById('automata-pattern'),
         set: function(value)  {
-            if (value) {
-                log('change pattern to ' + value);
-            }
             this.value = value;
         },
         get: function(value) {
@@ -134,21 +130,37 @@ function init() {
     });
 
     // Layer
-    layer.bind('color', {
-        scope: document.getElementById('automata-color'),
+    automata.getLayer('layer-0').bind('color', {
+        element: document.getElementById('automata-color'),
         set: function(value)  {
-            log('change color to ' + value);
             this.value = value;
         },
         get: function(value) {
             return this.value
         }
     });
+
+    // Play
+    document.getElementById('automata-play').addEventListener('click', function() {
+        automata.setOption('started', !automata.getOption('started'));
+        this.innerHTML = automata.getOption('started') ? 'Stop' : 'Play';
+    });
+
+    // Next
+    document.getElementById('automata-next').addEventListener('click', function() {
+        automata.next();
+        automata.repaint();
+    });
+
+    // Clear
+    document.getElementById('automata-clear').addEventListener('click', function() {
+        automata.getLayer('layer-0').clear();
+        automata.repaint();
+    });
+
+    // // Pattern
+    // automata.getLayer('layer-0').setOption('pattern', 'random');
 
     // Repaint
     automata.repaint();
-}
-
-function log(text) {
-    document.getElementById("log").innerHTML += '<div class="line">' + text + '</div>';
 }

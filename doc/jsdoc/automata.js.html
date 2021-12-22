@@ -1,12 +1,40 @@
-// Namespace 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: automata.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: automata.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Namespace 
 var Automata = {};
 
 /**
  * Automata.Object is an utility class that provides :
- * <ul>
- * <li>options and options binding to HTMLElement system</li>
- * <li>events system</li>
- * </ul>
+ * &lt;ul>
+ * &lt;li>options and options binding to HTMLElement system&lt;/li>
+ * &lt;li>events system&lt;/li>
+ * &lt;/ul>
  * This class is used by other classes like Automata.Automata or Automata.Layer
  * 
  * @example
@@ -60,7 +88,7 @@ Automata.Object = class {
     }
 
     /**
-     * Bind an HTMLElement to an option of the object.<br>The bind will listen the the HTMLElement "change" 
+     * Bind an HTMLElement to an option of the object.&lt;br>The bind will listen the the HTMLElement "change" 
      * event. For each "change", the object option will be reset using the value of the HTMLElement.
      * @param {String} name The option name
      * @param {Object} config The bind configuration
@@ -173,7 +201,7 @@ Automata.Object = class {
 }
 
 /**
- * Automata.Automata represents the automata view.<br>
+ * Automata.Automata represents the automata view.&lt;br>
  * It takes an HTMLElement that will be used to render.
  * @example
  * const myAutomata = new Automata.Automata(document.getElementById('automata'), {
@@ -404,7 +432,7 @@ Automata.Automata = class extends Automata.Object {
         var layers = this.#layers,
             index;
 
-        for (index = 0; index < layers.length; index++) {
+        for (index = 0; index &lt; layers.length; index++) {
             if (layers[index].getId() === id) {
                 return layers[index];
             }
@@ -415,7 +443,7 @@ Automata.Automata = class extends Automata.Object {
     
     /**
      * Returns the Automata's layers
-     * @returns {Array.<Automata.Layer>} The Automata's layers
+     * @returns {Array.&lt;Automata.Layer>} The Automata's layers
      */
     getLayers() {
         return this.#layers;
@@ -531,7 +559,7 @@ Automata.Automata = class extends Automata.Object {
 }
 
 /**
- * Automata.Layer is an utilty class that represent a layer in the automata.<br>
+ * Automata.Layer is an utilty class that represent a layer in the automata.&lt;br>
  * Child classes should implements "redraw" function.
  */
 Automata.Layer = class extends Automata.Object {
@@ -593,12 +621,12 @@ Automata.Layer = class extends Automata.Object {
         this.#canvas.height = height;
         this.#canvas.width = width;
 
-        if (width < automata.getElement().offsetWidth) {
+        if (width &lt; automata.getElement().offsetWidth) {
             this.#canvas.style.left = Math.round((automata.getElement().offsetWidth - width) / 2);
         } else {
             this.#canvas.style.left = 0;
         }
-        if (height < automata.getElement().offsetHeight) {
+        if (height &lt; automata.getElement().offsetHeight) {
             this.#canvas.style.top = Math.round((automata.getElement().offsetHeight - height) / 2);
         } else {
             this.#canvas.style.top = 0;
@@ -703,7 +731,7 @@ Automata.Layer = class extends Automata.Object {
 }
 
 /**
- * Automata.BackgroundLayer is a subclass of Automata.Layer.<br>
+ * Automata.BackgroundLayer is a subclass of Automata.Layer.&lt;br>
  * It is used by Automata.Automata to draw a grid in background
  * @private
  */
@@ -727,14 +755,14 @@ Automata.BackgroundLayer = class extends Automata.Layer {
         context.strokeStyle = '#F0F0F0';
 
         // Vertical lines
-        for (index = 1; index < size.width; index++) {
+        for (index = 1; index &lt; size.width; index++) {
             context.moveTo(index * step, 0);
             context.lineTo(index * step, size.height * step);
             context.stroke();
         }
 
         // Horizontal lines
-        for (index = 1; index < size.height; index++) {
+        for (index = 1; index &lt; size.height; index++) {
             context.moveTo(0, index * step);
             context.lineTo(size.width * step, index * step);
             context.stroke();
@@ -746,7 +774,7 @@ Automata.BackgroundLayer = class extends Automata.Layer {
 }
 
 /**
- * Automata.Info is a subclass of Automata.Layer.<br>
+ * Automata.Info is a subclass of Automata.Layer.&lt;br>
  * It is used by Automata.Automata to draw info in background (FPS ...)
  * @private
  */
@@ -782,7 +810,7 @@ Automata.InfoLayer = class extends Automata.Layer {
 }
 
 /**
- * Automata.CellularLayer is a subclass of Automata.Layer.<br>
+ * Automata.CellularLayer is a subclass of Automata.Layer.&lt;br>
  * Developper should instanciate this class to draw an automata.
  * @example
  * const myAutomata = new Automata.Automata(document.getElementById('automata'), {
@@ -840,9 +868,9 @@ Automata.CellularLayer = class extends Automata.Layer {
      * The Automata.CellularLayer constructor
      * @param {Automata.Automata} automata The automata
      * @param {Object} options The options
-     * @param {Object} options.patterns A map of String<Function> that the layer will use as a pattern catalog
+     * @param {Object} options.patterns A map of String&lt;Function> that the layer will use as a pattern catalog
      * @param {String} options.pattern The default pattern
-     * @param {Object} options.colors A map of String<Function> that the layer will use as a color catalog.
+     * @param {Object} options.colors A map of String&lt;Function> that the layer will use as a color catalog.
      * @param {String} options.color The default color
      */
     constructor(automata, options) {
@@ -885,9 +913,9 @@ Automata.CellularLayer = class extends Automata.Layer {
         var cells = [],
             array = [];
 
-        for (x = 0; x < size.width; x++) {
+        for (x = 0; x &lt; size.width; x++) {
             cells[x] = [];
-            for (y = 0; y < size.height; y++) {
+            for (y = 0; y &lt; size.height; y++) {
                 cells[x][y] = new Automata.Cell(this, {
                     x: x,
                     y: y
@@ -901,8 +929,8 @@ Automata.CellularLayer = class extends Automata.Layer {
         this.#cells = cells;
         this.#array = array;
 
-        for (x = 0; x < size.width; x++) {
-            for (y = 0; y < size.height; y++) {
+        for (x = 0; x &lt; size.width; x++) {
+            for (y = 0; y &lt; size.height; y++) {
                 this.#cells[x][y].addNeighbor(this.getCellAt(x-1, y-1));
                 this.#cells[x][y].addNeighbor(this.getCellAt(x, y-1));
                 this.#cells[x][y].addNeighbor(this.getCellAt(x+1, y-1));
@@ -1026,7 +1054,7 @@ Automata.CellularLayer = class extends Automata.Layer {
     /**
      * Load coordininates and set the cell as alive. The layer is marked 
      * as dirty. The Automate have to be repainted to see the result.
-     * @param {Array.<Object>} coordinates The coordinates (ex: [{x: 1, y: 1}])
+     * @param {Array.&lt;Object>} coordinates The coordinates (ex: [{x: 1, y: 1}])
      */
     load(coordinates) {
         coordinates.forEach(function(coordinate) {
@@ -1062,7 +1090,7 @@ Automata.CellularLayer = class extends Automata.Layer {
 }
 
 /**
- * Automata.Cell represents a cell in Automata.CellularLayer.<br>
+ * Automata.Cell represents a cell in Automata.CellularLayer.&lt;br>
  * Developpers should not instanciate this class but can use it to
  * draw specific shapes on the Automata.CellularLayer.
  */
@@ -1195,4 +1223,26 @@ Automata.Cell = class extends Automata.Object {
     invert() {
         this.setAlive(!this.isAlive());
     }
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 22 2021 13:35:21 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
