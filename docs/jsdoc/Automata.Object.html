@@ -31,7 +31,7 @@
         <h2><span class="attribs"><span class="type-signature"></span></span>
             <span class="ancestors"><a href="global.html#Automata">Automata</a>.</span>Object<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Automata.Object is an utility class that provides :<ul><li>options and options binding to HTMLElement system</li><li>events system</li></ul>This class is used by other classes like Automata.Automata or Automata.Layer</div>
+            <div class="class-description">Automata.Object is an utility class that provides :<ul><li>events system</li></ul>This class is used by other classes like Automata.Automata or Automata.Layer</div>
         
     
 </header>
@@ -147,7 +147,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line50">line 50</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line122">line 122</a>
     </li></ul></dd>
     
 
@@ -178,7 +178,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Create a derived class of Automata.Objectclass MyObject extends Automata.Object {     constructor(options) {         // Calling superclass         super(options);         // Listening to the name option         this.listen('namechange', {             fn: function(newValue) {                 console.log('new value: ' + newValue);             },             scope: this         });     }}// Create an instance of MyObject, setting a name// option with a default value "foo".const myInstance = new MyObject({     name: 'foo';})// Listen to the name optionmyInstance.listen('namechange', {     fn: function(newValue) {         console.log('another listener');     }});// Set the option name to 'bar' will fire the// event 'namechange' and call two callbacks functions.myInstance.setOption('name', 'bar');</code></pre>
+    <pre class="prettyprint"><code>// Create a derived class of Automata.Objectclass MyObject extends Automata.Object {     constructor(options) {         super(options);     }     setHeight(height) {         this.#height = height;         this.fireEvent('heightchange', [this, height]);     }}// Create an instance of MyObjectconst myInstance = new MyObject()// Listen to the heightchange eventmyInstance.listen('heightchange', {     fn: function(height) {         console.log('height has been changed to ' + height);     }});// Set the option height to 250 will fire the// 'heightchange' event and call callbacks functions.myInstance.setHeight(500);</code></pre>
 
 
 
@@ -201,421 +201,6 @@
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="bind"><span class="type-signature"></span>bind<span class="signature">(name, config)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Bind an HTMLElement to an option of the object.<br>The bind will listen the the HTMLElement "change" event. For each "change", the object option will be reset using the value of the HTMLElement.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The option name</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>config</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The bind configuration
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>element</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The HTMLElement to bind on option</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>set</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">This function is called when the option value changes in order to reset the HTMLElement</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>get</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">This function is called when HTMLElement fires a "change" event in order to reset the object option</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line73">line 73</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="fireBind"><span class="type-signature"></span>fireBind<span class="signature">(name, value)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Fire a bind
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The option name</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The options value</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line98">line 98</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         
             
@@ -747,7 +332,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line125">line 125</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line170">line 170</a>
     </li></ul></dd>
     
 
@@ -772,275 +357,6 @@
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getOption"><span class="type-signature"></span>getOption<span class="signature">(name)</span><span class="type-signature"> &rarr; {*}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Returns an option value
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The option name</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line138">line 138</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The value of the option
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">*</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getOptions"><span class="type-signature"></span>getOptions<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Returns the options
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line146">line 146</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The options
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -1161,6 +477,29 @@
 
         <tr>
             
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The id of the listener (usefull to mute)</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>fn</code></td>
             
 
@@ -1248,7 +587,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line113">line 113</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line141">line 141</a>
     </li></ul></dd>
     
 
@@ -1284,7 +623,7 @@
     
 
     
-    <h4 class="name" id="setOption"><span class="type-signature"></span>setOption<span class="signature">(name, value, reset)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="mute"><span class="type-signature"></span>mute<span class="signature">(name, id)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1292,7 +631,7 @@
 
 
 <div class="description">
-    Set an option. If the option has changed, it fire the associated binds and an event named event + 'change' (ex: widthchange)
+    Mute an event
 </div>
 
 
@@ -1334,7 +673,7 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">*</span>
 
 
             
@@ -1344,14 +683,14 @@
 
             
 
-            <td class="description last">The option name</td>
+            <td class="description last">The event name</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
@@ -1367,30 +706,7 @@
 
             
 
-            <td class="description last">The value</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>reset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">True to reset the value and fire events even if the value was not changed</td>
+            <td class="description last">The id of the listener</td>
         </tr>
 
     
@@ -1431,156 +747,12 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line156">line 156</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line153">line 153</a>
     </li></ul></dd>
     
 
     
 
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="setOptions"><span class="type-signature"></span>setOptions<span class="signature">(options)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Set a list of options.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line169">line 169</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>{<a href="Automata.Object.html#setOption">Automata.Object#setOption</a>}</li>
-        </ul>
-    </dd>
     
 
     
@@ -1621,13 +793,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Interfaces</h3><ul><li><a href="Automata.CellStateProvider.html">CellStateProvider</a></li></ul><h3>Events</h3><ul><li><a href="Automata.CellularLayer.html#event:cellmousedown">cellmousedown</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li><li><a href="global.html#DefaultCellStateProvider">DefaultCellStateProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 22 2021 16:13:45 GMT+0100 (GMT+01:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Dec 23 2021 10:55:07 GMT+0100 (GMT+01:00)
 </footer>
 
 <script> prettyPrint(); </script>

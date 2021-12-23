@@ -31,7 +31,7 @@
         <h2><span class="attribs"><span class="type-signature"></span></span>
             <span class="ancestors"><a href="global.html#Automata">Automata</a>.</span>Automata<span class="signature">(element, options)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Automata.Automata represents the automata view.<br>It takes an HTMLElement that will be used to render.</div>
+            <div class="class-description">Automata.Automata represents the automata view.<br></div>
         
     
 </header>
@@ -151,29 +151,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>started</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">True to start the automata</td>
-        </tr>
-
     
 
         <tr>
@@ -311,7 +288,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line192">line 192</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line213">line 213</a>
     </li></ul></dd>
     
 
@@ -342,7 +319,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>const myAutomata = new Automata.Automata(document.getElementById('automata'), {     started: false,     delay: 100,     height: 100,     width: 100,     step: 10});myAutomata.setOption('started', true);</code></pre>
+    <pre class="prettyprint"><code>// Instanciate new Automataconst automata = new Automata.Automata(document.getElementById('automata'), {     delay: 100,     height: 10,     width: 10,     step: 10});// Add CellularLayerautomata.addCellularLayer({    id: 'layer-0'});// Load cellsautomata.getLayer('layer-0').load([{     x: 5,     y: 4,     state: 1}, {     x: 5,     y: 5,     state: 1}, {     x: 5,     y: 6,     state: 1}]);// Startautomata.start();</code></pre>
 
 
 
@@ -473,7 +450,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line397">line 397</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line377">line 377</a>
     </li></ul></dd>
     
 
@@ -639,7 +616,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line385">line 385</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line365">line 365</a>
     </li></ul></dd>
     
 
@@ -680,6 +657,116 @@
     <dd>
         
 <span class="param-type"><a href="Automata.Layer.html">Automata.Layer</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getDelay"><span class="type-signature"></span>getDelay<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns the automata delay
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line403">line 403</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The automata delay
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Number</span>
 
 
     </dd>
@@ -749,7 +836,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line376">line 376</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line356">line 356</a>
     </li></ul></dd>
     
 
@@ -815,7 +902,7 @@
 
 
 <div class="description">
-    Returns the automata height option
+    Returns the automata height
 </div>
 
 
@@ -859,7 +946,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line439">line 439</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line411">line 411</a>
     </li></ul></dd>
     
 
@@ -888,7 +975,7 @@
 
         
 <div class="param-desc">
-    The automata height option
+    The automata height
 </div>
 
 
@@ -1018,7 +1105,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line406">line 406</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line386">line 386</a>
     </li></ul></dd>
     
 
@@ -1128,7 +1215,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line423">line 423</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line419">line 419</a>
     </li></ul></dd>
     
 
@@ -1186,116 +1273,6 @@
     
 
     
-    <h4 class="name" id="getSize"><span class="type-signature"></span>getSize<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Returns the automata width and height option in an object
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line455">line 455</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The automata size
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="getStep"><span class="type-signature"></span>getStep<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
 
@@ -1304,7 +1281,7 @@
 
 
 <div class="description">
-    Returns the automata step option
+    Returns the automata step
 </div>
 
 
@@ -1348,7 +1325,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line431">line 431</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line427">line 427</a>
     </li></ul></dd>
     
 
@@ -1377,7 +1354,7 @@
 
         
 <div class="param-desc">
-    The automata step option
+    The automata step
 </div>
 
 
@@ -1414,7 +1391,7 @@
 
 
 <div class="description">
-    Returns the automata width option
+    Returns the automata width
 </div>
 
 
@@ -1458,7 +1435,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line447">line 447</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line435">line 435</a>
     </li></ul></dd>
     
 
@@ -1487,7 +1464,7 @@
 
         
 <div class="param-desc">
-    The automata width option
+    The automata width
 </div>
 
 
@@ -1516,7 +1493,7 @@
     
 
     
-    <h4 class="name" id="isPainted"><span class="type-signature"></span>isPainted<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="isStarted"><span class="type-signature"></span>isStarted<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
 
     
@@ -1524,7 +1501,7 @@
 
 
 <div class="description">
-    Returns true if the Automata is painted
+    Returns the running state of the automata
 </div>
 
 
@@ -1568,7 +1545,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line466">line 466</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line490">line 490</a>
     </li></ul></dd>
     
 
@@ -1597,7 +1574,7 @@
 
         
 <div class="param-desc">
-    The automata painted state
+    The running state
 </div>
 
 
@@ -1634,7 +1611,7 @@
 
 
 <div class="description">
-    Ask the Automata to determine its next state.
+    Ask the Automata to determine its next state
 </div>
 
 
@@ -1678,7 +1655,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line487">line 487</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line511">line 511</a>
     </li></ul></dd>
     
 
@@ -1707,11 +1684,6 @@
 
 
 
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>const myAutomata = new Automata.Automata(document.getElementById('automata'), {     started: false,     delay: 100,     height: 100,     width: 100,     step: 10});// Ask the automata to determine it's next statemyAutomata.next();// Ask the automata to repaintmyAutomata.repaint();</code></pre>
-
-
 
         
             
@@ -1719,7 +1691,7 @@
     
 
     
-    <h4 class="name" id="repaint"><span class="type-signature"></span>repaint<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="pause"><span class="type-signature"></span>pause<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -1727,7 +1699,7 @@
 
 
 <div class="description">
-    Ask the Automata to repaint. If the automata options 'started' is true, it will repaint indefinitely while the 'started' option is set to false;
+    Pause the automata (shorthand for setStarted(false))
 </div>
 
 
@@ -1771,7 +1743,868 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line496">line 496</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line497">line 497</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="repaint"><span class="type-signature"></span>repaint<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Ask the Automata to repaint. If the automata is started, it will repaint until it is paused
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line521">line 521</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setDelay"><span class="type-signature"></span>setDelay<span class="signature">(delay)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the delay (in millisecond)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>delay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The delay</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line443">line 443</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setHeight"><span class="type-signature"></span>setHeight<span class="signature">(height)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the height (number of cell)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The height</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line451">line 451</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setStarted"><span class="type-signature"></span>setStarted<span class="signature">(started)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the running state of the automata
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>started</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The running state</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line478">line 478</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setStep"><span class="type-signature"></span>setStep<span class="signature">(step)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the step (number of pixel)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>step</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line460">line 460</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setWidth"><span class="type-signature"></span>setWidth<span class="signature">(width)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the width (number of cell)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line469">line 469</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Start the automata (shorthand for setStarted(true))
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line504">line 504</a>
     </li></ul></dd>
     
 
@@ -1817,13 +2650,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Interfaces</h3><ul><li><a href="Automata.CellStateProvider.html">CellStateProvider</a></li></ul><h3>Events</h3><ul><li><a href="Automata.CellularLayer.html#event:cellmousedown">cellmousedown</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li><li><a href="global.html#DefaultCellStateProvider">DefaultCellStateProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 22 2021 16:13:45 GMT+0100 (GMT+01:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Dec 23 2021 10:55:07 GMT+0100 (GMT+01:00)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,14 +1,20 @@
 # Cellular-Automata
-A javascript library for create cellular automata.
+A javascript library for cellular automata.
 
-## Overview
-Create simple or complexe interactive cellular automata in a webpage.
-
-### Simple automata
-![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true)
-
-### Complex automata
-![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true)
+## Features
+Cellular Automata JS Library provides :
+- Flexible height, width and cell size
+- Repaint delay
+- Play, Pause, Next
+- Layer system
+    - System layers
+        - BackgroundLayer (grid)
+        - InfoLayer (FPS ...)
+    - Extensible CellularLayer
+- Event system (ex: on cell mouse down)
+- Configurable rules
+    - Multiple cell state
+    - Multiple cell color
 
 ## Usage
 ```html
@@ -19,64 +25,48 @@ Create simple or complexe interactive cellular automata in a webpage.
         </div>
     </body>
     <script>
+        // Instanciate new Automata
         const automata = new Automata.Automata(document.getElementById('automata'), {
-            started: false,
             delay: 100,
             height: 10,
             width: 10,
             step: 10
         });
-        
-        // Add a layer
-        automata.addLayer(new Automata.CellularLayer(automata, {
-            id: 'layer-0',
-            patterns: {
-                'france-flag': function() {
-                    return [{
-                        x: 4, 
-                        y: 5
-                    }, {
-                        x: 5, 
-                        y: 5
-                    }, {
-                        x: 6, 
-                        y: 5
-                    }];
-                }
-            },
-            pattern: 'france-flag',
-            colors: {
-                'france-flag': function(cell) {
-                    if (cell.getX() === 4) {
-                        return 'blue';
-                    }
-                    if (cell.getX() === 5) {
-                        return 'white';
-                    }
-                    if (cell.getX() === 6) {
-                        return 'red';
-                    }
-                    return 'transparent';
-                }
-            },
-            color: 'france-flag',
-            rules: {
-                'static': function(cell) {
-                    return cell.isAlive();
-                },
-                'invert': function(cell) {
-                    return !cell.isAlive();
-                }
-            },
-            rule: 'invert'
-        }));
-        
-        automata.setOption('started', true);
+
+        // Add CellularLayer
+        automata.addCellularLayer({
+            id: 'layer-0'
+        });
+
+        // Load cells
+        automata.getLayer('layer-0').load([{
+            x: 5,
+            y: 4,
+            state: 1
+        }, {
+            x: 5,
+            y: 5,
+            state: 1
+        }, {
+            x: 5,
+            y: 6,
+            state: 1
+        }]);
+
+        automata.start();
     </script>
 </html>
 ```
 ## Example
-See expample [here](https://nicolateral.github.io/cellular-automata/index.html)
+
+### Simple automata
+![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true)
+
+### Complex automata
+![alt text](https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true)
+
+### Live examples
+See expamples [here](https://nicolateral.github.io/cellular-automata/index.html)
 
 ## Documentation
 See full documentation [here](https://nicolateral.github.io/cellular-automata/jsdoc/index.html)

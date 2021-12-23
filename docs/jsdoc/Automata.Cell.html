@@ -31,7 +31,7 @@
         <h2><span class="attribs"><span class="type-signature"></span></span>
             <span class="ancestors"><a href="global.html#Automata">Automata</a>.</span>Cell<span class="signature">(layer, options)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Automata.Cell represents a cell in Automata.CellularLayer.<br>Developpers should not instanciate this class but can use it todraw specific shapes on the Automata.CellularLayer.</div>
+            <div class="class-description">Automata.Cell represents a cell in Automata.CellularLayer.<br>Developpers should not instanciate this class.</div>
         
     
 </header>
@@ -242,7 +242,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1094">line 1094</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1087">line 1087</a>
     </li></ul></dd>
     
 
@@ -291,6 +291,104 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="applyNextState"><span class="type-signature"></span>applyNextState<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the nextState as current state
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1211">line 1211</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the new state
+</div>
+
+
+
+    
+
+
+
+
 
         
             
@@ -350,7 +448,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1164">line 1164</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1138">line 1138</a>
     </li></ul></dd>
     
 
@@ -460,7 +558,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1188">line 1188</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1178">line 1178</a>
     </li></ul></dd>
     
 
@@ -518,7 +616,7 @@
     
 
     
-    <h4 class="name" id="getX"><span class="type-signature"></span>getX<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id="getNextState"><span class="type-signature"></span>getNextState<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
 
     
@@ -526,7 +624,7 @@
 
 
 <div class="description">
-    Returns the Cell x option
+    Returns the Cell next state
 </div>
 
 
@@ -570,7 +668,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1172">line 1172</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1146">line 1146</a>
     </li></ul></dd>
     
 
@@ -599,7 +697,227 @@
 
         
 <div class="param-desc">
-    The Cell x option
+    The Cell next state
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getState"><span class="type-signature"></span>getState<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns the Cell state
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1154">line 1154</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Cell state
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getX"><span class="type-signature"></span>getX<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns the Cell x
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1162">line 1162</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The Cell x
 </div>
 
 
@@ -636,7 +954,7 @@
 
 
 <div class="description">
-    Returns the Cell y option
+    Returns the Cell y
 </div>
 
 
@@ -680,7 +998,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1180">line 1180</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1170">line 1170</a>
     </li></ul></dd>
     
 
@@ -709,7 +1027,7 @@
 
         
 <div class="param-desc">
-    The Cell y option
+    The Cell y
 </div>
 
 
@@ -738,7 +1056,7 @@
     
 
     
-    <h4 class="name" id="invert"><span class="type-signature"></span>invert<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="isDirty"><span class="type-signature"></span>isDirty<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
 
     
@@ -746,7 +1064,7 @@
 
 
 <div class="description">
-    Invert the alive state of the Cell
+    Returns true if the cell is dirty
 </div>
 
 
@@ -790,95 +1108,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1212">line 1212</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="isAlive"><span class="type-signature"></span>isAlive<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Returns the alive state of the Cell
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1205">line 1205</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1203">line 1203</a>
     </li></ul></dd>
     
 
@@ -907,7 +1137,7 @@
 
         
 <div class="param-desc">
-    the alive stae
+    The dirty state
 </div>
 
 
@@ -936,7 +1166,7 @@
     
 
     
-    <h4 class="name" id="setAlive"><span class="type-signature"></span>setAlive<span class="signature">(alive)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setNextState"><span class="type-signature"></span>setNextState<span class="signature">(state)</span><span class="type-signature"></span></h4>
     
 
     
@@ -944,7 +1174,7 @@
 
 
 <div class="description">
-    Set the alive state of the Cell
+    Set the next state
 </div>
 
 
@@ -980,13 +1210,13 @@
 
         <tr>
             
-                <td class="name"><code>alive</code></td>
+                <td class="name"><code>state</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">Number</span>
 
 
             
@@ -996,7 +1226,7 @@
 
             
 
-            <td class="description last">the alive state</td>
+            <td class="description last">The next state</td>
         </tr>
 
     
@@ -1037,7 +1267,144 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1196">line 1196</a>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1186">line 1186</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setState"><span class="type-signature"></span>setState<span class="signature">(state)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Set the state
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>state</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The state</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="automata.js.html">automata.js</a>, <a href="automata.js.html#line1194">line 1194</a>
     </li></ul></dd>
     
 
@@ -1083,13 +1450,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Interfaces</h3><ul><li><a href="Automata.CellStateProvider.html">CellStateProvider</a></li></ul><h3>Events</h3><ul><li><a href="Automata.CellularLayer.html#event:cellmousedown">cellmousedown</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li><li><a href="global.html#DefaultCellStateProvider">DefaultCellStateProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 22 2021 16:13:45 GMT+0100 (GMT+01:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Dec 23 2021 10:55:07 GMT+0100 (GMT+01:00)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,112 +1,140 @@
 /**
  *  Namespace 
  */
-var Automata = {};
+var Automata = {
+    
+    /**
+     * This is the default cell state provider that implements 
+     * [the original rules]{@link https://en.wikipedia.org/wiki/Conway's_Game_of_Life} of John von Conway.
+     * 
+     * @example 
+     * DefaultCellStateProvider = {
+     * 
+     *     // Return the next state
+     *     getNextState(cell) {
+     *         var count = 0,
+     *             state;
+     * 
+     *         // Count each neighbors of state === 1
+     *         cell.getNeighbors().forEach(function(neighbor) {
+     *             if (neighbor.getState() === 1) {
+     *                 count += 1;
+     *             }
+     *         });
+     * 
+     *         // Here is the rule
+     *         if (cell.getState() === 0) {
+     *             if (count === 3) {
+     *                 return 1;
+     *             }
+     *         } else {
+     *             if (!(count === 2 || count === 3)) {
+     *                 return 0;
+     *             }
+     *         }
+     * 
+     *         // Return
+     *         return cell.getState();
+     *     },
+     * 
+     *     // Return the color
+     *     getColor(state) {
+     *         return state === 1 ? 'rgba(0, 0, 0, 0.7)' : 'rgb(255, 255, 255)';
+     *     }
+     * };
+     * @constant DefaultCellStateProvider
+     * 
+     */
+    DefaultCellStateProvider: {
+
+        /**
+         * @see {Automata.CellStateProvider#getNextState}
+         */
+        getNextState(cell) {
+            var count = 0,
+                state;
+    
+            // Count each neighbors of state === 1
+            cell.getNeighbors().forEach(function(neighbor) {
+                if (neighbor.getState() === 1) {
+                    count += 1;
+                }
+            });
+    
+            // Here is the rule
+            if (cell.getState() === 0) {
+                if (count === 3) {
+                    return 1;
+                }
+            } else {
+                if (!(count === 2 || count === 3)) {
+                    return 0;
+                }
+            }
+    
+            // Return
+            return cell.getState();
+        },
+        
+        /**
+         * @see {Automata.CellStateProvider#getColor}
+         */
+        getColor(state) {
+            return state === 1 ? 'rgba(0, 0, 0, 0.7)' : 'transparent';
+        }
+    }
+};
 
 /**
  * Automata.Object is an utility class that provides :
  * <ul>
- * <li>options and options binding to HTMLElement system</li>
  * <li>events system</li>
  * </ul>
  * This class is used by other classes like Automata.Automata or Automata.Layer
- * 
  * @example
  * 
  * // Create a derived class of Automata.Object
  * class MyObject extends Automata.Object {
  *      constructor(options) {
- * 
- *          // Calling superclass
  *          super(options);
- * 
- *          // Listening to the name option
- *          this.listen('namechange', {
- *              fn: function(newValue) {
- *                  console.log('new value: ' + newValue);
- *              },
- *              scope: this
- *          });
+ *      }
+ *      setHeight(height) {
+ *          this.#height = height;
+ *          this.fireEvent('heightchange', [this, height]);
  *      }
  * }
  * 
- * // Create an instance of MyObject, setting a name
- * // option with a default value "foo".
- * const myInstance = new MyObject({
- *      name: 'foo';
- * })
+ * // Create an instance of MyObject
+ * const myInstance = new MyObject()
  * 
- * // Listen to the name option
- * myInstance.listen('namechange', {
- *      fn: function(newValue) {
- *          console.log('another listener');
+ * // Listen to the heightchange event
+ * myInstance.listen('heightchange', {
+ *      fn: function(height) {
+ *          console.log('height has been changed to ' + height);
  *      }
+ * 
  * });
  * 
- * // Set the option name to 'bar' will fire the
- * // event 'namechange' and call two callbacks functions.
- * myInstance.setOption('name', 'bar');
+ * // Set the option height to 250 will fire the
+ * // 'heightchange' event and call callbacks functions.
+ * myInstance.setHeight(500);
  */
 Automata.Object = class {
 
-    #options = {};
     #events = {};
-    #binds = {};
 
     /**
      * Automata.Object constructor
      * @param {Object} options The options of the class
      */
     constructor(options) {
-        this.setOptions(options);
-    }
-
-    /**
-     * Bind an HTMLElement to an option of the object.<br>The bind will listen the the HTMLElement "change" 
-     * event. For each "change", the object option will be reset using the value of the HTMLElement.
-     * @param {String} name The option name
-     * @param {Object} config The bind configuration
-     * @param {HTMLElement} config.element The HTMLElement to bind on option
-     * @param {Function} config.set This function is called when the option value changes in order to reset the HTMLElement
-     * @param {Function} config.get This function is called when HTMLElement fires a "change" event in order to reset the object option
-     */
-    bind(name, config) {
-        var self = this;
-
-        // Create
-        if (!this.#binds[name]) {
-            this.#binds[name] = [];
-        }
-
-        // Register
-        this.#binds[name].push(config);
-        
-        // HTMLElement to option
-        config.element.addEventListener('change', function() {
-            self.setOption(name, config.get.call(config.element));
-        });
-        
-        // Option to HTMLElement (first call)
-        config.set.call(config.element, this.getOption(name));
-    }
-
-    /**
-     * Fire a bind
-     * @param {String} name The option name
-     * @param {*} value The options value
-     */
-    fireBind(name, value) {
-        if (this.#binds[name]) {
-            this.#binds[name].forEach(function(listener) {
-                listener.set.call(listener.scope || this, value);
-            }, this);
-        }
     }
 
     /**
      * Listen to an event
      * @param {String} name The event name
      * @param {Object} config The listener configuration
+     * @param {String} config.id The id of the listener (usefull to mute)
      * @param {Function} config.fn The callback function
      * @param {*} config.scope The callback scope
      */
@@ -115,6 +143,23 @@ Automata.Object = class {
             this.#events[name] = [];
         }
         this.#events[name].push(config);
+    }
+
+    /**
+     * Mute an event
+     * @param {*} name The event name
+     * @param {*} id The id of the listener
+     */
+    mute(name, id) {
+        if (!this.#events[name]) {
+            return;
+        }
+        var index;
+        for (index = this.#events[name].length - 1; index >= 0; index--) {
+            if (this.#events[name][index].id === id) {
+                this.#events[name].splice(index, 1);
+            }
+        }
     }
 
     /**
@@ -129,78 +174,58 @@ Automata.Object = class {
             }, this);
         }
     }
-
-    /**
-     * Returns an option value
-     * @param {String} name The option name
-     * @returns {*} The value of the option
-     */
-    getOption(name) {
-        return this.#options[name];
-    }
-
-    /**
-     * Returns the options
-     * @returns {Object} The options
-     */
-    getOptions() {
-        return this.#options;
-    }
-
-    /**
-     * Set an option. If the option has changed, it fire the associated binds and an event named event + 'change' (ex: widthchange)
-     * @param {String} name The option name
-     * @param {*} value The value
-     * @param {Boolean} reset True to reset the value and fire events even if the value was not changed
-     */
-    setOption(name, value, reset) {
-        if (this.#options[name] !== value || reset === true) {
-            this.#options[name] = value;
-            this.fireBind(name, value);
-            this.fireEvent(name + 'change', [value]);
-        }
-    }
-
-    /**
-     * Set a list of options.
-     * @see {Automata.Object#setOption}
-     * @param {*} options 
-     */
-    setOptions(options) {
-        var name;
-
-        for (name in options) {
-            this.setOption(name, options[name]);
-        }
-    }
 }
 
 /**
  * Automata.Automata represents the automata view.<br>
- * It takes an HTMLElement that will be used to render.
  * @example
- * const myAutomata = new Automata.Automata(document.getElementById('automata'), {
- *      started: false,
+ * // Instanciate new Automata
+ * const automata = new Automata.Automata(document.getElementById('automata'), {
  *      delay: 100,
- *      height: 100,
- *      width: 100,
+ *      height: 10,
+ *      width: 10,
  *      step: 10
  * });
  * 
- * myAutomata.setOption('started', true);
+ * // Add CellularLayer
+ * automata.addCellularLayer({
+ *     id: 'layer-0'
+ * });
+ * 
+ * // Load cells
+ * automata.getLayer('layer-0').load([{
+ *      x: 5,
+ *      y: 4,
+ *      state: 1
+ * }, {
+ *      x: 5,
+ *      y: 5,
+ *      state: 1
+ * }, {
+ *      x: 5,
+ *      y: 6,
+ *      state: 1
+ * }]);
+ * 
+ * // Start
+ * automata.start();
  */
 Automata.Automata = class extends Automata.Object {
+
+    #delay = 10;
+    #height = 10;
+    #step = 10;
+    #width = 10;
 
     #last = null;
     #layers = [];
     #element = null;
-    #painted = false;
+    #started = false;
     
     /**
      * Automata.Automata constructor
      * @param {HTMLElement} element The element where the automata will be rendered
      * @param {Object} options The options
-     * @param {Boolean} options.started True to start the automata
      * @param {Number} options.delay The delay (in ms) between each automata repaint
      * @param {Number} options.height The number of vertical cells 
      * @param {Number} options.width The number of horizontal cells
@@ -211,23 +236,21 @@ Automata.Automata = class extends Automata.Object {
         // Super
         super(options);
 
-        // Events
-        this.listen('widthchange', {
-            fn: this.#updateWidth,
-            scope: this
-        });
-        this.listen('heightchange', {
-            fn: this.#updateHeight,
-            scope: this
-        });
-        this.listen('stepchange', {
-            fn: this.#updateStep,
-            scope: this
-        });
-        this.listen('startedchange', {
-            fn: this.#updateStarted,
-            scope: this
-        });
+        // Options
+        if (options) {
+            if (options.delay !== undefined) {
+                this.setDelay(options.delay);
+            }
+            if (options.height !== undefined) {
+                this.setHeight(options.height);
+            }
+            if (options.step !== undefined) {
+                this.setStep(options.step);
+            }
+            if (options.width !== undefined) {
+                this.setWidth(options.width);
+            }
+        }
 
         // Element
         this.#element = element;
@@ -302,49 +325,6 @@ Automata.Automata = class extends Automata.Object {
     }
 
     /**
-     * Called after step option change. This repaint the Automata.
-     * @private
-     */
-    #updateStep() {
-        this.#reziseLayers()
-        if (this.isPainted()) {
-            this.repaint();
-        }
-    }
-
-    /**
-     * Called after height option change. This repaint the Automata.
-     * @private
-     */
-    #updateHeight() {
-        this.#reziseLayers()
-        if (this.isPainted()) {
-            this.repaint();
-        }
-    }
-
-    /**
-     * Called after width option change. This repaint the Automata.
-     * @private
-     */
-    #updateWidth() {
-        this.#reziseLayers()
-        if (this.isPainted()) {
-            this.repaint();
-        }
-    }
-
-    /**
-     * Called after started option change. This repaint the Automata.
-     * @private
-     */
-    #updateStarted(value) {
-        if (value) {
-            this.repaint();
-        }
-    }
-    
-    /**
      * Request en animation frame to the browser
      * @private
      */
@@ -417,6 +397,22 @@ Automata.Automata = class extends Automata.Object {
     }
     
     /**
+     * Returns the automata delay
+     * @returns {Number} The automata delay
+     */
+    getDelay() {
+        return this.#delay;
+    }
+
+    /**
+     * Returns the automata height
+     * @returns {Number} The automata height
+     */
+    getHeight() {
+        return this.#height;
+    }
+
+    /**
      * Returns the Automata's layers
      * @returns {Array.<Automata.Layer>} The Automata's layers
      */
@@ -425,64 +421,92 @@ Automata.Automata = class extends Automata.Object {
     }
 
     /**
-     * Returns the automata step option
-     * @returns {Number} The automata step option
+     * Returns the automata step
+     * @returns {Number} The automata step
      */
     getStep() {
-        return this.getOption('step');
+        return this.#step;
     }
 
     /**
-     * Returns the automata height option
-     * @returns {Number} The automata height option
-     */
-    getHeight() {
-        return this.getOption('height');
-    }
-
-    /**
-     * Returns the automata width option
-     * @returns {Number} The automata width option
+     * Returns the automata width
+     * @returns {Number} The automata width
      */
     getWidth() {
-        return this.getOption('width');
+        return this.#width;
     }
 
     /**
-     * Returns the automata width and height option in an object
-     * @returns {Object} The automata size
+     * Set the delay (in millisecond)
+     * @param {Number} delay The delay
      */
-    getSize() {
-        return {
-            height: this.getHeight(),
-            width: this.getWidth()
-        };
+    setDelay(delay) {
+        this.#delay = delay;
     }
 
     /**
-     * Returns true if the Automata is painted
-     * @returns {Boolean} The automata painted state
+     * Set the height (number of cell)
+     * @param {Number} height The height
      */
-    isPainted() {
-        return this.#painted;
+    setHeight(height) {
+        this.#height = height;
+        this.#reziseLayers();
     }
 
     /**
-     * Ask the Automata to determine its next state.
-     * @example
-     * const myAutomata = new Automata.Automata(document.getElementById('automata'), {
-     *      started: false,
-     *      delay: 100,
-     *      height: 100,
-     *      width: 100,
-     *      step: 10
-     * });
-     * 
-     * // Ask the automata to determine it's next state
-     * myAutomata.next();
-     * 
-     * // Ask the automata to repaint
-     * myAutomata.repaint();
+     * Set the step (number of pixel)
+     * @param {Number} step The step
+     */
+    setStep(step) {
+        this.#step = step;
+        this.#reziseLayers();
+    }
+
+    /**
+     * Set the width (number of cell)
+     * @param {Number} width The width
+     */
+    setWidth(width) {
+        this.#width = width;
+        this.#reziseLayers();
+    }
+
+    /**
+     * Set the running state of the automata
+     * @param {Boolean} started The running state
+     */
+    setStarted(started) {
+        var wasStarted = this.isStarted();
+        this.#started = started;
+        if (started && !wasStarted) {
+            this.repaint();
+        }
+    }
+
+    /**
+     * Returns the running state of the automata
+     * @returns {Boolean} The running state
+     */
+    isStarted() {
+        return this.#started;
+    }
+
+    /**
+     * Pause the automata (shorthand for setStarted(false))
+     */
+    pause() {
+        this.setStarted(false);
+    }
+
+    /**
+     * Start the automata (shorthand for setStarted(true))
+     */
+    start() {
+        this.setStarted(true);
+    }
+
+    /**
+     * Ask the Automata to determine its next state
      */
     next() {
         this.getLayers().forEach(function(layer) {
@@ -491,15 +515,16 @@ Automata.Automata = class extends Automata.Object {
     }
 
     /**
-     * Ask the Automata to repaint. If the automata options 'started' is true, it will repaint indefinitely while the 'started' option is set to false;
+     * Ask the Automata to repaint. 
+     * If the automata is started, it will repaint until it is paused
      */
     repaint() {
         var self = this,
             now = Date.now(),
-            delay = this.getOption('delay');
+            delay = this.getDelay();
 
         // Started
-        if (this.getOption('started')) {
+        if (this.isStarted()) {
 
             // FPS
             if (this.#last) {
@@ -517,11 +542,8 @@ Automata.Automata = class extends Automata.Object {
             layer.repaint();
         });
 
-        // Flag
-        this.#painted = true;
-        
         // Request next frame
-        if (self.getOption('started')) {
+        if (this.isStarted()) {
             if (delay) {
                 setTimeout(function() {
                     self.#requestAnimationFrame();
@@ -539,6 +561,8 @@ Automata.Automata = class extends Automata.Object {
  */
 Automata.Layer = class extends Automata.Object {
     
+    #id = null;
+    #autoClear = true;
     #dirty = true;
     #canvas = null;
     #automata = null;
@@ -553,6 +577,13 @@ Automata.Layer = class extends Automata.Object {
 
         // Super
         super(options);
+
+        // Options
+        if (options) {
+            if (options.id) {
+                this.setId(options.id);
+            }
+        }
 
         // Automata
         this.#automata = automata;
@@ -609,6 +640,14 @@ Automata.Layer = class extends Automata.Object {
 
         this.setDirty(true);
     }
+    
+    /**
+     * Set auto clear
+     * @param {Boolean} autoClear The auto clear
+     */
+    setAutoClear(autoClear) {
+        this.#autoClear = autoClear;
+    }
 
     /**
      * Returns the Layer's Automata
@@ -636,11 +675,19 @@ Automata.Layer = class extends Automata.Object {
     }
 
     /**
-     * Returns the layer id option
-     * @returns {Number} The layer id option
+     * Returns the layer id
+     * @returns {Number} The layer id
      */
     getId() {
-        return this.getOption('id');
+        return this.#id;
+    }
+
+    /**
+     * Returns the layer dirty state
+     * @returns {Boolean} The layer dirty state
+     */
+    isDirty() {
+        return this.#dirty;
     }
 
     /**
@@ -653,11 +700,11 @@ Automata.Layer = class extends Automata.Object {
     }
 
     /**
-     * Returns the layer dirty state
-     * @returns {Boolean} The layer dirty state
+     * Set the id of the Lyaer
+     * @param {String} id The id
      */
-    isDirty() {
-        return this.#dirty;
+    setId(id) {
+        this.#id = id;
     }
 
     /**
@@ -683,11 +730,12 @@ Automata.Layer = class extends Automata.Object {
         // Variables
         var context = this.getContext('2d'),
             automata = this.getAutomata(),
-            size = automata.getSize(),
             step = automata.getStep();
 
         // Clear
-        context.clearRect(0, 0, size.width * step, size.height * step);
+        if (this.#autoClear) {
+            context.clearRect(0, 0, automata.getWidth() * step, automata.getHeight() * step);
+        }
 
         // Redraw
         this.redraw(this.getContext('2d'));
@@ -719,7 +767,8 @@ Automata.BackgroundLayer = class extends Automata.Layer {
      */
     redraw(context) {
         var automata = this.getAutomata(),
-            size = automata.getSize(),
+            height = automata.getHeight(),
+            width = automata.getWidth(),
             step = automata.getStep(),
             index;
 
@@ -730,16 +779,16 @@ Automata.BackgroundLayer = class extends Automata.Layer {
         context.strokeStyle = '#F0F0F0';
 
         // Vertical lines
-        for (index = 1; index < size.width; index++) {
+        for (index = 1; index < width; index++) {
             context.moveTo(index * step, 0);
-            context.lineTo(index * step, size.height * step);
+            context.lineTo(index * step, height * step);
             context.stroke();
         }
 
         // Horizontal lines
-        for (index = 1; index < size.height; index++) {
+        for (index = 1; index < height; index++) {
             context.moveTo(0, index * step);
-            context.lineTo(size.width * step, index * step);
+            context.lineTo(width * step, index * step);
             context.stroke();
         }
 
@@ -776,113 +825,81 @@ Automata.InfoLayer = class extends Automata.Layer {
     redraw(context) {
 
         // Repaint
-        context.clearRect(5, 5, 80, 20);
+        context.clearRect(5, 5, 80, 40);
         context.fillStyle = '#FFFFFFDD';
-        context.fillRect(5, 5, 40, 20);
+        context.fillRect(5, 5, 60, 40);
         context.fillStyle = '#000000';
-        context.fillText(this.#fps + ' FPS', 10, 20);
+        context.fillText('FPS: ' + this.#fps, 10, 20);
+        context.fillText('Height: ' + this.getAutomata().getHeight(), 10, 30);
+        context.fillText('Width: ' + this.getAutomata().getWidth(), 10, 40);
     }
 }
 
 /**
- * Automata.CellularLayer is a subclass of Automata.Layer.<br>
- * Developper should instanciate this class to draw an automata.
- * @example
- * const automata = new Automata.Automata(document.getElementById('automata'), {
- *     started: false,
- *     delay: 100,
- *     height: 10,
- *     width: 10,
- *     step: 10
- * });
- * 
- * // Add a layer
- * automata.addLayer(new Automata.CellularLayer(automata, {
- *     id: 'layer-0',
- *     patterns: {
- *         'france-flag': function() {
- *             return [{
- *                 x: 4, 
- *                 y: 5
- *             }, {
- *                 x: 5, 
- *                 y: 5
- *             }, {
- *                 x: 6, 
- *                 y: 5
- *             }];
- *         }
- *     },
- *     pattern: 'france-flag',
- *     colors: {
- *         'france-flag': function(cell) {
- *             if (cell.getX() === 4) {
- *                 return 'blue';
- *             }
- *             if (cell.getX() === 5) {
- *                 return 'white';
- *             }
- *             if (cell.getX() === 6) {
- *                 return 'red';
- *             }
- *             return 'transparent';
- *         }
- *     },
- *     color: 'france-flag',
- *     rules: {
- *         'static': function(cell) {
- *             return cell.isAlive();
- *         },
- *         'invert': function(cell) {
- *             return !cell.isAlive();
- *         }
- *     },
- *     rule: 'invert'
- * }));
- * 
- * automata.setOption('started', true);
+ * Interface for classes that represent a rule.
+ * @see {DefaultCellStateProvider}
+ * @interface
+ */
+Automata.CellStateProvider = class {
+
+    /**
+     * Return the next state of a cell
+     * @param {Automata.Cell} cell The cell
+     * @returns The state
+     */
+     getNextState(cell) {
+        throw new Error('not implemented');
+    }
+
+    /**
+     * Returns the color from a state
+     * @param {Number} state The state
+     * @returns The color
+     */
+    getColor(state) {
+        throw new Error('not implemented');
+    }
+};
+
+
+/**
+ * Automata.CellularLayer is a subclass of Automata.Layer.
+ * @fires Automata.CellularLayer#cellmousedown
  */
 Automata.CellularLayer = class extends Automata.Layer {
 
+    /**
+     * CellMouseDown event.
+     *
+     * @event Automata.CellularLayer#cellmousedown
+     * @property {Automata.CellularLayer} layer The layer
+     * @property {Automata.Cell} cell The cell
+     * @property {MouseEvent} event The event
+     */
+
     #cells = [];
     #array = [];
+    #cellStateProvider = null;
 
     /**
      * The Automata.CellularLayer constructor
      * @param {Automata.Automata} automata The automata
      * @param {Object} options The options
-     * @param {Object} options.patterns A map of String<Function> that the layer will use as a pattern catalog
-     * @param {String} options.pattern The default pattern
-     * @param {Object} options.colors A map of String<Function> that the layer will use as a color catalog.
-     * @param {String} options.color The default color
-     * @param {Object} options.rules A map of String<Function> that the layer will use as a rule catalog.
-     * @param {String} options.rules The default rule
      */
     constructor(automata, options) {
 
         // Super
         super(automata, options);
 
-        // Events
-        this.listen('colorchange', {
-            fn: this.#updateColor,
-            scope: this
-        });
-
-        this.listen('patternchange', {
-            fn: this.#updatePattern,
-            scope: this
-        });
-
-        // Color
-        if (this.getOption('color')) {
-            this.#updateColor(this.getOption('color'));
+        // Options
+        if (options) {
+            if (options.cellStateProvider) {
+                this.setCellStateProvider(options.cellStateProvider);
+            }
         }
 
-        // Pattern
-        if (this.getOption('pattern')) {
-            this.#updatePattern(this.getOption('pattern'));
-        }
+        // AutoClear
+        this.setAutoClear(false);
     }
 
     /**
@@ -892,21 +909,19 @@ Automata.CellularLayer = class extends Automata.Layer {
      */
     #createCells(recover) {
         var automata = this.getAutomata(),
-            size = automata.getSize(),
+            height = automata.getHeight(),
+            width = automata.getWidth(),
             x, y;
 
         var cells = [],
             array = [];
 
-        for (x = 0; x < size.width; x++) {
+        for (x = 0; x < width; x++) {
             cells[x] = [];
-            for (y = 0; y < size.height; y++) {
-                cells[x][y] = new Automata.Cell(this, {
-                    x: x,
-                    y: y
-                });
+            for (y = 0; y < height; y++) {
+                cells[x][y] = new Automata.Cell(this, x, y);
                 if (recover === true) {
-                    cells[x][y].setAlive(this.isAliveAt(x, y))
+                    cells[x][y].setState(this.getCellStateAt(x, y) || 0);
                 }
             }
         }
@@ -914,8 +929,8 @@ Automata.CellularLayer = class extends Automata.Layer {
         this.#cells = cells;
         this.#array = array;
 
-        for (x = 0; x < size.width; x++) {
-            for (y = 0; y < size.height; y++) {
+        for (x = 0; x < width; x++) {
+            for (y = 0; y < height; y++) {
                 this.#cells[x][y].addNeighbor(this.getCellAt(x-1, y-1));
                 this.#cells[x][y].addNeighbor(this.getCellAt(x, y-1));
                 this.#cells[x][y].addNeighbor(this.getCellAt(x+1, y-1));
@@ -927,53 +942,6 @@ Automata.CellularLayer = class extends Automata.Layer {
                 this.#array.push(this.#cells[x][y]);
             }
         }
-    }
-
-    /**
-     * Called after color option change. This repaint the Automata.
-     * @private
-     */
-    #updateColor() {
-        this.setDirty(true);
-        this.getAutomata().repaint();
-    }
-
-    /**
-     * Called after pattern option change. This repaint the Automata.
-     * @private
-     */
-    #updatePattern(name) {
-        var patterns = this.getOption('patterns'),
-            data = patterns[name]();
-
-        // Clear
-        this.#createCells();
-
-        // Load
-        this.load(data);
-
-        // Repaint
-        this.getAutomata().repaint();
-    }
-
-    /**
-     * Returns the next alive state of a cell
-     * @param {Automata.Cell} cell The cell
-     * @returns {Boolean} the next alive state
-     * @private
-     */
-     getNextAlive(cell) {
-        return this.getOption('rules')[this.getOption('rule')](cell);
-    }
-    
-    /**
-     * Returns the color code of the cell
-     * @param {Automata.Cell} cell The cell
-     * @returns {String} The color code of the cell
-     * @private
-     */
-    getColorCode(cell) {
-        return this.getOption('colors')[this.getOption('color')](cell);
     }
 
     /**
@@ -991,9 +959,17 @@ Automata.CellularLayer = class extends Automata.Layer {
      */
     clear() {
         this.#array.forEach(function(cell) {
-            cell.setAlive(false);
+            cell.setState(0);
         });
         this.setDirty(true);
+    }
+
+    /**
+     * Set the cell state provider
+     * @param {Automata.CellStateProvider} cellStateProvider 
+     */
+    setCellStateProvider(cellStateProvider) {
+        this.#cellStateProvider = cellStateProvider;
     }
 
     /**
@@ -1005,32 +981,35 @@ Automata.CellularLayer = class extends Automata.Layer {
      */
     propagateEvent(name, value) {
         var x = Math.floor(value.x / this.getAutomata().getStep()),
-            y = Math.floor(value.y / this.getAutomata().getStep());
+            y = Math.floor(value.y / this.getAutomata().getStep()),
+            cell = this.getCellAt(x, y);
 
-        this.getCellAt(x, y).invert();
 
-        this.setDirty(true);
-
-        this.getAutomata().repaint();
-
-        this.#array.forEach(function(cell) {
-            cell.propagateEvent(name, value);
-        });
+        // Event
+        this.fireEvent('cell' + name, [this, cell, value]);
     }
 
     /**
-     * Returns the cell alive option at coordinates. It returns false if there is no 
+     * Returns the cells
+     * @returns {Array.<Automata.Cell>} the cells
+     */
+    getArray() {
+        return this.#array;
+    }
+
+    /**
+     * Returns the cell state option at coordinates. It returns false if there is no 
      * cell at the coordinates
      * @param {Number} x The x coordinate 
      * @param {Number} y The y coordinate 
-     * @returns {Boolean} The cell alive option at coordinate
+     * @returns {Boolean} The cell state option at coordinate
      */
-    isAliveAt(x, y) {
+    getCellStateAt(x, y) {
         var cell = this.getCellAt(x, y);
         if (cell) {
-            return cell.isAlive();
+            return cell.getState();
         }
-        return false;
+        return null;
     }
 
     /**
@@ -1047,15 +1026,14 @@ Automata.CellularLayer = class extends Automata.Layer {
         return this.#cells[x][y];
     }
 
-
     /**
-     * Load coordininates and set the cell as alive. The layer is marked 
+     * Load coordininates and set the cell state. The layer is marked 
      * as dirty. The Automate have to be repainted to see the result.
-     * @param {Array.<Object>} coordinates The coordinates (ex: [{x: 1, y: 1}])
+     * @param {Array.<Object>} coordinates
      */
     load(coordinates) {
         coordinates.forEach(function(coordinate) {
-            this.#cells[coordinate.x][coordinate.y].setAlive(true);
+            this.#cells[coordinate.x][coordinate.y].setState(coordinate.state || 1);
         }, this);
         this.setDirty(true);
     }
@@ -1065,9 +1043,12 @@ Automata.CellularLayer = class extends Automata.Layer {
      * @see {Automata.Automata#next}
      */
     next() {
+        var cellStateProvider = this.#cellStateProvider || Automata.DefaultCellStateProvider;
+
         this.#array.forEach(function(cell) {
-            cell.next();
+            cell.setNextState(cellStateProvider.getNextState(cell));
         });
+
         this.setDirty(true);
     }
 
@@ -1077,26 +1058,40 @@ Automata.CellularLayer = class extends Automata.Layer {
      * @see {Automata.Layer#redraw}
      */
     redraw(context) {
-        var automata = this.getAutomata(),
+        var cellStateProvider = this.#cellStateProvider || Automata.DefaultCellStateProvider,
+            automata = this.getAutomata(),
             step = automata.getStep();
 
+        // Draw each cells
         this.#array.forEach(function(cell) {
-            cell.redraw(context, step);
+            if (cell.isDirty()) {
+                var state = cell.applyNextState();
+
+                // If the cell next state is not 0
+                // then we draw the cell with its color
+                if (state === 0) {
+                    context.clearRect(cell.getX() * step, cell.getY() * step, step, step);
+                } else {
+                    context.fillStyle = cellStateProvider.getColor(state);
+                    context.fillRect(cell.getX() * step, cell.getY() * step, step, step);
+                }
+            }
         });
     }
 }
 
 /**
  * Automata.Cell represents a cell in Automata.CellularLayer.<br>
- * Developpers should not instanciate this class but can use it to
- * draw specific shapes on the Automata.CellularLayer.
+ * Developpers should not instanciate this class.
  */
 Automata.Cell = class extends Automata.Object {
     
+    #x = null;
+    #y = null;
+    #state = 0;
+    #nextState = null;
     #layer = null;
     #neighbors = [];
-    #current = false;
-    #next = false;
 
     /**
      * Automata.Cell constructor
@@ -1105,13 +1100,24 @@ Automata.Cell = class extends Automata.Object {
      * @param {Number} options.x The x coordinate
      * @param {Number} options.y The y coordinate
      */
-    constructor(layer, options) {
+    constructor(layer, x, y, options) {
 
         // Parent
         super(options);
 
         // Layer
         this.#layer = layer;
+
+        // Coords
+        this.#x = x;
+        this.#y = y;
+
+        // Options
+        if (options) {
+            if (options.state) {
+                this.setState(options.state);
+            }
+        }
     }
 
     /**
@@ -1126,38 +1132,6 @@ Automata.Cell = class extends Automata.Object {
     }
 
     /**
-     * Ask the Cell to determine its next state
-     * @private
-     */
-    next() {
-        this.#next = this.getLayer().getNextAlive(this);
-    }
-
-    /**
-     * Ask the Cell to redraw
-     * @param {RenderingContext} context the rendering context
-     * @param {Number} step The automata state
-     * @private
-     */
-    redraw(context, step) {
-        this.#current = this.#next;
-        if (this.#current) {
-            context.fillStyle = this.#layer.getColorCode(this);
-            context.fillRect(this.getX() * step, this.getY() * step, step, step);
-        }
-    }
-
-    /**
-     * Propagate event
-     * @param {Event} name The event name
-     * @param {*} value The event value
-     * @private
-     */
-    propagateEvent(name, value) {
-        // TODO : stuffs if its necessary ...
-    }
-
-    /**
      * Returns the parent CellularLayer
      * @returns {Automata.CellularLayer} The CellularLayer
      */
@@ -1166,19 +1140,35 @@ Automata.Cell = class extends Automata.Object {
     }
 
     /**
-     * Returns the Cell x option
-     * @returns {Number} The Cell x option
+     * Returns the Cell next state
+     * @returns {Number} The Cell next state
      */
-    getX() {
-        return this.getOption('x');
+    getNextState() {
+        return this.#nextState;
     }
 
     /**
-     * Returns the Cell y option
-     * @returns {Number} The Cell y option
+     * Returns the Cell state
+     * @returns {Number} The Cell state
+     */
+    getState() {
+        return this.#state;
+    }
+
+    /**
+     * Returns the Cell x 
+     * @returns {Number} The Cell x 
+     */
+    getX() {
+        return this.#x;
+    }
+
+    /**
+     * Returns the Cell y 
+     * @returns {Number} The Cell y 
      */
     getY() {
-        return this.getOption('y');
+        return this.#y;
     }
 
     /**
@@ -1188,28 +1178,40 @@ Automata.Cell = class extends Automata.Object {
     getNeighbors() {
         return this.#neighbors;
     }
-
+    
     /**
-     * Set the alive state of the Cell
-     * @param {Boolean} alive the alive state
+     * Set the next state
+     * @param {Number} state The next state
      */
-    setAlive(alive) {
-        this.#current = alive;
-        this.#next = alive;
+    setNextState(nextState) {
+        this.#nextState = nextState;
     }
 
     /**
-     * Returns the alive state of the Cell
-     * @returns {Boolean} the alive stae
+     * Set the state
+     * @param {Number} state The state
      */
-    isAlive() {
-        return this.#current;
+    setState(state) {
+        this.#nextState = null;
+        this.#state = state;
     }
 
     /**
-     * Invert the alive state of the Cell
+     * Returns true if the cell is dirty
+     * @returns {Boolean} The dirty state
      */
-    invert() {
-        this.setAlive(!this.isAlive());
+    isDirty() {
+        return this.#nextState !== this.#state;
+    }
+
+    /**
+     * Set the nextState as current state
+     * @returns the new state
+     */
+    applyNextState() {
+        if (this.#nextState !== null) {
+            this.#state = this.#nextState;
+        }
+        return this.#state;
     }
 }
