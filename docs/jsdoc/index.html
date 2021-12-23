@@ -44,13 +44,32 @@
 
     <section>
         <article><h1>Cellular-Automata</h1>
-<p>A javascript library for create cellular automata.</p>
-<h2>Overview</h2>
-<p>Create simple or complexe interactive cellular automata in a webpage.</p>
-<h3>Simple automata</h3>
-<p><img src="https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true" alt="alt text"></p>
-<h3>Complex automata</h3>
-<p><img src="https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true" alt="alt text"></p>
+<p>A javascript library for cellular automata.</p>
+<h2>Features</h2>
+<p>Cellular Automata JS Library provides :</p>
+<ul>
+<li>Flexible height, width and cell size</li>
+<li>Repaint delay</li>
+<li>Play, Pause, Next</li>
+<li>Layer system
+<ul>
+<li>System layers
+<ul>
+<li>BackgroundLayer (grid)</li>
+<li>InfoLayer (FPS ...)</li>
+</ul>
+</li>
+<li>Extensible CellularLayer</li>
+</ul>
+</li>
+<li>Event system (ex: on cell mouse down)</li>
+<li>Configurable rules
+<ul>
+<li>Multiple cell state</li>
+<li>Multiple cell color</li>
+</ul>
+</li>
+</ul>
 <h2>Usage</h2>
 <pre class="prettyprint source lang-html"><code>&lt;html>
     &lt;script type=&quot;text/javascript&quot; src=&quot;automata.js&quot;>&lt;/script>
@@ -59,64 +78,45 @@
         &lt;/div>
     &lt;/body>
     &lt;script>
+        // Instanciate new Automata
         const automata = new Automata.Automata(document.getElementById('automata'), {
-            started: false,
             delay: 100,
             height: 10,
             width: 10,
             step: 10
         });
-        
-        // Add a layer
-        automata.addLayer(new Automata.CellularLayer(automata, {
-            id: 'layer-0',
-            patterns: {
-                'france-flag': function() {
-                    return [{
-                        x: 4, 
-                        y: 5
-                    }, {
-                        x: 5, 
-                        y: 5
-                    }, {
-                        x: 6, 
-                        y: 5
-                    }];
-                }
-            },
-            pattern: 'france-flag',
-            colors: {
-                'france-flag': function(cell) {
-                    if (cell.getX() === 4) {
-                        return 'blue';
-                    }
-                    if (cell.getX() === 5) {
-                        return 'white';
-                    }
-                    if (cell.getX() === 6) {
-                        return 'red';
-                    }
-                    return 'transparent';
-                }
-            },
-            color: 'france-flag',
-            rules: {
-                'static': function(cell) {
-                    return cell.isAlive();
-                },
-                'invert': function(cell) {
-                    return !cell.isAlive();
-                }
-            },
-            rule: 'invert'
-        }));
-        
-        automata.setOption('started', true);
+
+        // Add CellularLayer
+        automata.addCellularLayer({
+            id: 'layer-0'
+        });
+
+        // Load cells
+        automata.getLayer('layer-0').load([{
+            x: 5,
+            y: 4,
+            state: 1
+        }, {
+            x: 5,
+            y: 5,
+            state: 1
+        }, {
+            x: 5,
+            y: 6,
+            state: 1
+        }]);
+
+        automata.start();
     &lt;/script>
 &lt;/html>
 </code></pre>
 <h2>Example</h2>
-<p>See expample <a href="https://nicolateral.github.io/cellular-automata/index.html">here</a></p>
+<h3>Simple automata</h3>
+<p><img src="https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/simple_automata.png?raw=true" alt="alt text"></p>
+<h3>Complex automata</h3>
+<p><img src="https://github.com/nicolateral/cellular-automata/blob/master/docs/resource/complex_automata.png?raw=true" alt="alt text"></p>
+<h3>Live examples</h3>
+<p>See expamples <a href="https://nicolateral.github.io/cellular-automata/index.html">here</a></p>
 <h2>Documentation</h2>
 <p>See full documentation <a href="https://nicolateral.github.io/cellular-automata/jsdoc/index.html">here</a></p></article>
     </section>
@@ -129,13 +129,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Automata.Automata.html">Automata</a></li><li><a href="Automata.Cell.html">Cell</a></li><li><a href="Automata.CellularLayer.html">CellularLayer</a></li><li><a href="Automata.Layer.html">Layer</a></li><li><a href="Automata.Object.html">Object</a></li></ul><h3>Interfaces</h3><ul><li><a href="Automata.CellStateProvider.html">CellStateProvider</a></li></ul><h3>Events</h3><ul><li><a href="Automata.CellularLayer.html#event:cellmousedown">cellmousedown</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Automata">Automata</a></li><li><a href="global.html#DefaultCellStateProvider">DefaultCellStateProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 22 2021 16:13:45 GMT+0100 (GMT+01:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Dec 23 2021 10:55:07 GMT+0100 (GMT+01:00)
 </footer>
 
 <script> prettyPrint(); </script>

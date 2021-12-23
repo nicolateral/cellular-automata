@@ -13,11 +13,12 @@
                     Cellular Automata JS Library
                 </div>
                 <div id="controls" class="flex-box flex-h">
-                    <a onclick="playResume(this)">Play</a>
-                    <a onclick="slowerFaster(this)">Faster</a>
-                    <a onclick="randomize()">Randomize</a>
-                    <a onclick="colorAB(this)">Color B</a>
-                    <a onclick="ruleAB(this)">Rule B</a>
+                    <a onclick="switchStarted(this)">Pause</a>
+                    <a onclick="switchGrid(this)">Hide grid</a>
+                    <a onclick="switchDelay(this)">60 FPS</a>
+                    <a onclick="setRule(ruleA)">Game of life</a>
+                    <a onclick="setRule(ruleB)">Immigration</a>
+                    <a onclick="setRule(ruleC)">Day and night</a>
                     <a onclick="clearLayer()">Clear</a>
                 </div>
                 <div>
@@ -32,153 +33,284 @@
     </body>
     <script type="text/javascript">
 
-        var page = document.getElementById('page'),
+        // Variables
+        const page = document.getElementById('page'),
             height = page.offsetHeight,
-            width = page.offsetWidth; 
-
+            width = page.offsetWidth,
+            step = 6; 
 
         // Automata
         const automata = new Automata.Automata(document.getElementById('page'), {
-            delay: 200,
-            step: 10,
-            height: Math.floor(height / 10) - 1,
-            width: Math.floor(width / 10) - 1
-        });
-
-        // Layer
-        automata.addCellularLayer({
-            id: 'layer-0',
-            colors: {
-                'a': function() {
-                    return 'rgba(0, 0, 0, 0.7)';
-                },
-                'b': function() {
-                    return 'rgba(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ', 0.7)';
-                }
-            },
-            patterns: {
-                'empty': function() {
-                    return [];
-                },
-                'random': function() {
-                    var random = [],
-                        i, j;
-
-                    for (i = 0; i < automata.getSize().width; i++) {
-                        for (j = 0; j < automata.getSize().height; j++) {
-                            if (Math.round(Math.random())) {
-                                random.push({
-                                    x: i,
-                                    y: j
-                                });
-                            }
-                        }
-                    }
-
-                    // Load
-                    return random;
-                }
-            },
-            rules: {
-                'a': function(cell) {
-                    var count = 0;
-
-                    cell.getNeighbors().forEach(function(neighbor) {
-                        if (neighbor.isAlive()) {
-                            count += 1;
-                        }
-                    });
-
-                    if (!cell.isAlive()) {
-                        if (count === 3) {
-                            return true;
-                        }
-                    } else {
-                        if (!(count === 2 || count === 3)) {
-                            return false;
-                        }
-                    }
-
-                    return cell.isAlive();
-                },
-                'b': function(cell) {
-                    var count = 0;
-                    
-                    cell.getNeighbors().forEach(function(neighbor) {
-                        if (neighbor.isAlive()) {
-                            count += 1;
-                        }
-                    });
-
-                    if (cell.isAlive()) {
-                        return false;
-                    }
-
-                    return count === 1;
-                }
-            },
-            rule: 'a',
-            color: 'a',
-            pattern: 'random'
+            delay: 100,
+            step: step,
+            height: Math.floor(height / step) - 1,
+            width: Math.floor(width / step) - 1
         });
 
         // PlayResume
-        const playResume = function(element) {
-            if (automata.getOption('started')) {
+        const switchStarted = function(element) {
+            if (automata.isStarted()) {
                 element.innerHTML = 'Resume';
             } else {
                 element.innerHTML = 'Pause';
             }
-            automata.setOption('started', !automata.getOption('started'));
+            automata.setStarted(!automata.isStarted());
         };
 
-        // SlowerFaster
-        const slowerFaster = function(element) {
-            if (automata.getOption('delay') === 0) {
-                element.innerHTML = 'Faster';
-                automata.setOption('delay', 200);
+        // SwitchGrid
+        const switchGrid = function(element) {
+            var canvas = document.getElementById('background');
+
+            if (!canvas.style.visibility || canvas.style.visibility === 'visible') {
+                element.innerHTML = 'Show grid';
+                canvas.style.visibility = 'hidden';
             } else {
-                element.innerHTML = 'Slower';
-                automata.setOption('delay', 0);
+                element.innerHTML = 'Hide grid';
+                canvas.style.visibility = 'visible';
+            }
+        }
+
+        // SlowerFaster
+        const switchDelay = function(element) {
+            if (automata.getDelay() === 0) {
+                element.innerHTML = '60 FPS';
+                automata.setDelay(100);
+            } else {
+                element.innerHTML = '10 FPS';
+                automata.setDelay(0);
             }
         };
 
-        // Randomize
-        const randomize = function() {
-            automata.getLayer('layer-0').setOption('pattern', 'random', true);
+        // SetRuleA
+        const setRule = function(rule) {
+            var layer = automata.getLayer('layer-0');
+
+            // Mute
+            layer.mute('cellmousedown', 'click');
+
+            // Listen
+            if (rule.click) {
+                layer.listen('cellmousedown', {
+                    id: 'click',
+                    fn: rule.click
+                });
+            }
+
+            // Clear
+            layer.clear();
+
+            // Repaint
+            layer.repaint();
+
+            // Randomise
+            layer.load(rule.getData());
+
+            // Default CellStateProvider
+            layer.setCellStateProvider(rule.cellStateProvider);
+
+            // Start
+            if (!automata.isStarted()) {
+                automata.repaint();
+            } 
         };
 
         // Clear
         const clearLayer = function() {
-            if (automata.getOption('started')) {
-                automata.setOption('started', false);
-            }
-            automata.getLayer('layer-0').setOption('pattern', 'empty', true);
+
+            // Clear
+            automata.getLayer('layer-0').clear();
+
+            // Repaint
+            automata.repaint();
         };
-        
-        // Const
-        const colorAB = function(element) {
-            if (automata.getLayer('layer-0').getOption('color') === 'a') {
-                element.innerHTML = 'Color A';
-                automata.getLayer('layer-0').setOption('color', 'b');
-            } else {
-                element.innerHTML = 'Color B';
-                automata.getLayer('layer-0').setOption('color', 'a');
-            }
-        }
 
-        // Const
-        const ruleAB = function(element) {
-            if (automata.getLayer('layer-0').getOption('rule') === 'a') {
-                element.innerHTML = 'Rule A';
-                automata.getLayer('layer-0').setOption('rule', 'b');
-            } else {
-                element.innerHTML = 'Rule B';
-                automata.getLayer('layer-0').setOption('rule', 'a');
-            }
-        }
+        // RuleA
+        const ruleA = {
+            click: function(layer, cell) {
+            
+                // State
+                if (cell.getState() === 0) {
+                    cell.setState(1);
+                } else {
+                    cell.setState(0);
+                }
 
-        // Repaint
-        automata.repaint();
+                // Dirty
+                automata.getLayer('layer-0').setDirty(true);
+
+                // Repaint
+                automata.repaint();
+            },
+            getData: function() {
+                var data = [],
+                    i, j;
+
+                for (i = 0; i < automata.getWidth(); i++) {
+                    for (j = 0; j < automata.getHeight(); j++) {
+                        if (Math.round(Math.random())) {
+                            data.push({
+                                x: i,
+                                y: j,
+                                state: 1
+                            });
+                        }
+                    }
+                }
+
+                // Load
+                return data;
+            },
+            cellStateProvider: Automata.DefaultCellStateProvider
+        };
+
+        // Rule B
+        const ruleB = {
+            click: function(layer, cell) {
+            
+            // State
+            if (cell.getState() === 2) {
+                cell.setState(0);
+            } else {
+                cell.setState(cell.getState() + 1);
+            }
+
+            // Dirty
+            automata.getLayer('layer-0').setDirty(true);
+
+            // Repaint
+            automata.repaint();
+        },
+            getData: function()   {
+                var data = [],
+                    i, j;
+
+                for (i = 0; i < automata.getWidth(); i++) {
+                    for (j = 0; j < automata.getHeight(); j++) {
+                        if (Math.round(Math.random())) {
+                            data.push({
+                                x: i,
+                                y: j,
+                                state: Math.random() > 0.5 ? 1 : 2
+                            });
+                        }
+                    }
+                }
+
+                // Load
+                return data;
+            },
+            cellStateProvider: {
+                getColor(state) {
+                    return state === 1 ? 'rgba(125, 0, 0, 0.7)' : 'rgba(0, 125, 0, 0.7)';
+                },
+                getNextState(cell) {
+                    var count = 0,
+                        count1 = 0,
+                        count2 = 0,
+                        state;
+
+                    cell.getNeighbors().forEach(function(neighbor) {
+                        if (neighbor.getState() === 1) {
+                            count += 1;
+                            count1 += 1;
+                        }
+                        if (neighbor.getState() === 2) {
+                            count += 1;
+                            count2 += 2;
+                        }
+                    });
+
+                    state = count2 > count1 ? 2 : 1;
+
+                    if (cell.getState() === 0) {
+                        if (count === 3) {
+                            return state;
+                        }
+                    } else {
+                        if (!(count === 2 || count === 3)) {
+                            return 0;
+                        }
+                    }
+
+                    return cell.getState();
+                }
+            }
+        };
+
+        // Rule C
+        const ruleC = {
+            click: function(layer, cell) {
+            
+                // State
+                if (cell.getState() === 0) {
+                    cell.setState(1);
+                } else {
+                    cell.setState(0);
+                }
+
+                // Dirty
+                automata.getLayer('layer-0').setDirty(true);
+
+                // Repaint
+                automata.repaint();
+            },
+            getData: function()   {
+                var data = [],
+                    i, j;
+
+                for (i = 0; i < automata.getWidth(); i++) {
+                    for (j = 0; j < automata.getHeight(); j++) {
+                        if (Math.round(Math.random())) {
+                            data.push({
+                                x: i,
+                                y: j,
+                                state: 1
+                            });
+                        }
+                    }
+                }
+
+                // Load
+                return data;
+            },
+            cellStateProvider: {
+                getColor(state) {
+                    return 'rgba(0, 0, 0, 0.7)';
+                },
+                getNextState(cell) {
+                    var count = 0;
+
+                    cell.getNeighbors().forEach(function(neighbor) {
+                        if (neighbor.getState() === 1) {
+                            count += 1;
+                        }
+                    });
+
+                    if (cell.getState() === 0) {
+                        if (count === 3 || count > 5) {
+                            return 1;
+                        }
+                    } else {
+                        if (!(count === 3 || count === 4 || count > 5)) {
+                            return 0;
+                        }
+                    }
+
+                    return cell.getState();
+                }
+            }
+        };
+
+        // Layer
+        automata.addCellularLayer({
+            id: 'layer-0'
+        });
+
+        // Randomise
+        setRule(ruleA);
+
+        // Start
+        automata.start();
     </script>
 </html>
+
