@@ -3,6 +3,7 @@ A javascript library for cellular automata.
 
 ## Features
 Cellular Automata JS Library provides :
+- Elementary and two dimension automaton
 - Flexible height, width and cell size
 - Repaint delay
 - Play, Pause, Next

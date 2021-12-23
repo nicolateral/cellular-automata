@@ -38,8 +38,8 @@ var Automata = {
      *     },
      * 
      *     // Return the color
-     *     getColor(state) {
-     *         return state === 1 ? 'rgba(0, 0, 0, 0.7)' : 'rgb(255, 255, 255)';
+     *     getColor(cell) {
+     *         return cell.getState() === 1 ? 'rgba(0, 0, 0, 0.7)' : 'rgb(255, 255, 255)';
      *     }
      * };
      * @constant DefaultCellStateProvider
@@ -79,8 +79,8 @@ var Automata = {
         /**
          * @see {Automata.CellStateProvider#getColor}
          */
-        getColor(state) {
-            return state === 1 ? 'rgba(0, 0, 0, 0.7)' : 'transparent';
+        getColor(cell) {
+            return cell.getState() === 1 ? 'rgba(0, 0, 0, 0.7)' : 'transparent';
         }
     }
 };
@@ -221,6 +221,7 @@ Automata.Automata = class extends Automata.Object {
     #layers = [];
     #element = null;
     #started = false;
+    #timeout = null;
     
     /**
      * Automata.Automata constructor
@@ -333,7 +334,7 @@ Automata.Automata = class extends Automata.Object {
 
         requestAnimationFrame(function() {
             self.next();
-            self.repaint();
+            self.redraw();
         });
     }
 
@@ -477,9 +478,13 @@ Automata.Automata = class extends Automata.Object {
      */
     setStarted(started) {
         var wasStarted = this.isStarted();
+
+        // Flag
         this.#started = started;
+
+        // Start
         if (started && !wasStarted) {
-            this.repaint();
+            this.redraw();
         }
     }
 
@@ -518,7 +523,16 @@ Automata.Automata = class extends Automata.Object {
      * Ask the Automata to repaint. 
      * If the automata is started, it will repaint until it is paused
      */
-    repaint() {
+    repaint(force) {
+        if (!this.isStarted()) {
+            this.redraw();
+        }
+    }
+
+    /**
+     * @private
+     */
+    redraw() {
         var self = this,
             now = Date.now(),
             delay = this.getDelay();
@@ -853,10 +867,10 @@ Automata.CellStateProvider = class {
 
     /**
      * Returns the color from a state
-     * @param {Number} state The state
+     * @param {Number} Cell The state
      * @returns The color
      */
-    getColor(state) {
+    getColor(cell) {
         throw new Error('not implemented');
     }
 };
@@ -1043,7 +1057,18 @@ Automata.CellularLayer = class extends Automata.Layer {
      * @see {Automata.Automata#next}
      */
     next() {
-        var cellStateProvider = this.#cellStateProvider || Automata.DefaultCellStateProvider;
+        var cellStateProvider = this.#cellStateProvider || Automata.DefaultCellStateProvider,
+            index = 0, i, j;
+   
+        // for (i = 0; i < this.getAutomata().getWidth(); i++) {
+        //     for (j = 0; j < this.getAutomata().getHeight(); j++) {
+        //         this.#cells[i][j].setNextState(cellStateProvider.getNextState(this.#cells[i][j]));
+        //     }
+        // }
+
+        // for (index = 0; index < this.#array.length; index++) {
+        //     this.#array[index].setNextState(cellStateProvider.getNextState(this.#array[index]));
+        // }
 
         this.#array.forEach(function(cell) {
             cell.setNextState(cellStateProvider.getNextState(cell));
@@ -1072,7 +1097,7 @@ Automata.CellularLayer = class extends Automata.Layer {
                 if (state === 0) {
                     context.clearRect(cell.getX() * step, cell.getY() * step, step, step);
                 } else {
-                    context.fillStyle = cellStateProvider.getColor(state);
+                    context.fillStyle = cellStateProvider.getColor(cell);
                     context.fillRect(cell.getX() * step, cell.getY() * step, step, step);
                 }
             }
@@ -1091,6 +1116,7 @@ Automata.Cell = class extends Automata.Object {
     #state = 0;
     #nextState = null;
     #layer = null;
+    #adjacents = {};
     #neighbors = [];
 
     /**
@@ -1126,8 +1152,20 @@ Automata.Cell = class extends Automata.Object {
      * @private
      */
     addNeighbor(neighbor) {
-        if (neighbor) {
-            this.#neighbors.push(neighbor);
+        if (!neighbor) {
+            return;
+        }
+
+        // Push
+        this.#neighbors.push(neighbor);
+
+        // Adjacents
+        if (neighbor.getX() === this.getX() - 1 && neighbor.getY() === this.getY()) {
+            this.#adjacents['l'] = neighbor;
+        } else if (neighbor.getX() === this.getX() + 1 && neighbor.getY() === this.getY()) {
+            this.#adjacents['r'] = neighbor;
+        } else if (neighbor.getX() === this.getX() && neighbor.getY() === this.getY() -1) {
+            this.#adjacents['t'] = neighbor;
         }
     }
 
@@ -1169,6 +1207,14 @@ Automata.Cell = class extends Automata.Object {
      */
     getY() {
         return this.#y;
+    }
+
+    /**
+     * getAdjacents
+     * @returns {Object} The adjacents
+     */
+    getAdjacents() {
+        return this.#adjacents;
     }
 
     /**

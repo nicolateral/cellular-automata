@@ -19,6 +19,7 @@
                     <a onclick="setRule(ruleA)">Game of life</a>
                     <a onclick="setRule(ruleB)">Immigration</a>
                     <a onclick="setRule(ruleC)">Day and night</a>
+                    <a onclick="setRule(ruleD)">Elementary</a>
                     <a onclick="clearLayer()">Clear</a>
                 </div>
                 <div>
@@ -33,11 +34,39 @@
     </body>
     <script type="text/javascript">
 
+        // Rules
+        const rules = [];
+            
+        // Vars
+        var index,
+            currentRule = 110;
+
+        // Init a rule
+        function initRule(index, value) {
+            rules[index] = {
+                '111': parseInt(value.substr(0, 1)),
+                '110': parseInt(value.substr(1, 1)),
+                '101': parseInt(value.substr(2, 1)),
+                '100': parseInt(value.substr(3, 1)),
+                '011': parseInt(value.substr(4, 1)),
+                '010': parseInt(value.substr(5, 1)),
+                '001': parseInt(value.substr(6, 1)),
+                '000': parseInt(value.substr(7, 1))
+            };
+        }
+
+
+        // Range over 0 > 255, generate 8 bits binary
+        // string in order to create each rules
+        for (index = 0; index < 256; index++) {
+            initRule(index, ('00000000' + (index >>> 0).toString(2) + '').substr(-8));
+        }
+
         // Variables
         const page = document.getElementById('page'),
             height = page.offsetHeight,
             width = page.offsetWidth,
-            step = 6; 
+            step = 10; 
 
         // Automata
         const automata = new Automata.Automata(document.getElementById('page'), {
@@ -85,6 +114,11 @@
         const setRule = function(rule) {
             var layer = automata.getLayer('layer-0');
 
+            // Init
+            if (rule.init) {
+                rule.init();
+            }
+
             // Mute
             layer.mute('cellmousedown', 'click');
 
@@ -107,11 +141,6 @@
 
             // Default CellStateProvider
             layer.setCellStateProvider(rule.cellStateProvider);
-
-            // Start
-            if (!automata.isStarted()) {
-                automata.repaint();
-            } 
         };
 
         // Clear
@@ -166,20 +195,20 @@
         // Rule B
         const ruleB = {
             click: function(layer, cell) {
-            
-            // State
-            if (cell.getState() === 2) {
-                cell.setState(0);
-            } else {
-                cell.setState(cell.getState() + 1);
-            }
+                
+                // State
+                if (cell.getState() === 2) {
+                    cell.setState(0);
+                } else {
+                    cell.setState(cell.getState() + 1);
+                }
 
-            // Dirty
-            automata.getLayer('layer-0').setDirty(true);
+                // Dirty
+                automata.getLayer('layer-0').setDirty(true);
 
-            // Repaint
-            automata.repaint();
-        },
+                // Repaint
+                automata.repaint();
+            },
             getData: function()   {
                 var data = [],
                     i, j;
@@ -200,8 +229,8 @@
                 return data;
             },
             cellStateProvider: {
-                getColor(state) {
-                    return state === 1 ? 'rgba(125, 0, 0, 0.7)' : 'rgba(0, 125, 0, 0.7)';
+                getColor(cell) {
+                    return cell.getState() === 1 ? 'rgba(125, 0, 0, 0.7)' : 'rgba(0, 125, 0, 0.7)';
                 },
                 getNextState(cell) {
                     var count = 0,
@@ -274,14 +303,14 @@
                 return data;
             },
             cellStateProvider: {
-                getColor(state) {
+                getColor(cell) {
                     return 'rgba(0, 0, 0, 0.7)';
                 },
                 getNextState(cell) {
                     var count = 0;
 
                     cell.getNeighbors().forEach(function(neighbor) {
-                        if (neighbor.getState() === 1) {
+                        if (neighbor.getState() > 0) {
                             count += 1;
                         }
                     });
@@ -296,6 +325,81 @@
                         }
                     }
 
+                    return cell.getState();
+                }
+            }
+        };
+
+        // Rule C
+        const ruleD = {
+            init: function() {
+                currentRule = prompt('Choose a rule number between 0 and 255 and click on the first line');
+            },
+            click: function(layer, cell) {
+            
+                // First
+                if (cell.getY() !== 0) {
+                    return;
+                }
+
+                // Layer
+                cell.getLayer().getArray().forEach(function(sibling) {
+                    if (sibling.getY() === 0 && sibling.getState() === 0) {
+                        sibling.setState(1);
+                    }
+                });
+
+                // State
+                if (cell.getState() === 1) {
+                    cell.setState(2);
+                } else {
+                    cell.setState(1);
+                }
+
+                // Dirty
+                automata.getLayer('layer-0').setDirty(true);
+
+                // Repaint
+                automata.repaint();
+            },
+            getData: function()   {
+                return [];
+            },
+            cellStateProvider: {
+                // State : 0 clear
+                // state : 1 off
+                // State : 2 on
+                getColor(cell) {
+                    return cell.getState() === 1 ? 'transparent' : 'rgba(0, 0, 0, 0.7)';
+                },
+                getNextState(cell) {
+                    
+                    // First 
+                    if (cell.getY() === 0) {
+                        return cell.getState();
+                    }
+
+                    // Cleared
+                    if (cell.getState() === 0) {
+                        var top = cell.getAdjacents()['t'],
+                            adjacents = top.getAdjacents(),
+                            pattern = '';
+
+                        // If the top is still clear,
+                        // we return a clear status.
+                        if (top.getState() === 0) {
+                            return 0;
+                        }
+
+                        // Pattern
+                        pattern += adjacents['l'] && adjacents['l'].getState() === 2 ? 1 : 0
+                        pattern += top.getState() === 2 ? 1 : 0;
+                        pattern += adjacents['r'] && adjacents['r'].getState() === 2 ? 1 : 0
+                        
+                        // Return
+                        return rules[currentRule][pattern] + 1;
+                    }
+                    
                     return cell.getState();
                 }
             }
